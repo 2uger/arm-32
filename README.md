@@ -5,3 +5,6 @@
 - 1. Setup architecture for armv7
 - 2. Run: target remote localhost:1234
 
+### Plan:
+- Write simple entry point, init first user process
+

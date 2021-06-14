@@ -7,7 +7,7 @@ static void uart_print(const char *s) {
 	}
 }
 
-void c_entry(void) {
+void main(void) {
 	uart_print("Hello, World!\n");
 	while (1)
 	    ;
