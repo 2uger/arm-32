@@ -1,4 +1,5 @@
-#define "defs.h"
+#include "core_cm3.h"
+#include "defs.h"
 
 void main() {
     consoleinit();
