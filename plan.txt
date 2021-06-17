@@ -1,6 +1,0 @@
-1. Make entyr point for kernel, setup stack for c code, call start
-2. Timer init, dis/enable interrupts, jump to main
-3. All preparation is here
-    -- Console init
-    -- Traps
-    -- Start process(first process)
