@@ -6,8 +6,11 @@ void userinit(void);
 
 // console.c
 void consoleinit(void);
-void printf(char);
+void printf(const char * s);
 
 // uart.c
 void uart_init(void);
-void uart_putchar(const char c);
+void uart_sendchar(const char c);
+
+// switch.c
+void contextswitch();

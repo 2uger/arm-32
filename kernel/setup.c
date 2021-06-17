@@ -1,8 +1,7 @@
 #include <core_cm3.h>
 
-
 void kernel_setup(void) {
-    vectortable();
+    vtableinit();
     timerinit();
     main();
 }

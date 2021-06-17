@@ -1,9 +1,9 @@
 /*
  * Define all memory regions for easy access
  * It's only 12kB of RAM start from 0x1000.0000
- * Give 4kB for kernel, other for user space
+ * Kernel -- high 4kB
+ * User   -- low 8kB
  */
-
 
 #define MEM_BOUND_LOW 0x1000.0000
 #define MEM_BOUND_HIGH 0x1000.2000

@@ -1,14 +1,24 @@
 SECTIONS
 {
-	 . = 0x0; /* Это флэшка (ROM) */
+	 . = KERNEL_BASE; /* Это флэшка (ROM) */
 	.text : {
-		start.o(.text)
-		main.o(.text) 
+        *(.text*)
 	} 
-	. = 0x20000000; /* С этого адреса начинается RAM */
-	.data : { *(.data) }
-	.bss : { *(.bss) }
-	. = ALIGN(8);
-	. = . + 0x1000; /* Отдаем под стек 4кБ */
-	stack_top = .;
+
+    .rodata : {
+        . = ALIGN(8);
+        *(.rodata*) 
+    }
+    
+    data : {
+        . = ALIGN(8);
+        *(.sdata .sdata.*) /* do not need to distinguish this from .data */
+        . = ALIGN(8);
+        *(.data .data.*)
+    }
+
+    .bss : {
+        . = ALIGN(8);
+        *(.bss .bss.*)
+    }
 }

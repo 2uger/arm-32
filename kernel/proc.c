@@ -1,6 +1,8 @@
+#include "memlayou.h"
 #include "proc.h"
+#include "param.h"
 
-struct cpu cpus[NCPU];
+struct cpu; 
 
 struct proc proc[NPROC];
 
@@ -15,17 +17,39 @@ static struct proc * allocproc(void) {
     newproc->state = USED;
     newproc->pid = 1 // allocpid();
     
+    
     // Clean up all process context registers
-    // newproc->context.lr
-    // newproc->context.sp
+    newproc->context.lr = (uint32_t)forkret;
+    newproc->context.sp
     return newproc;
 }
 
+void forkret(void) {
+    
+}
+
+// Code that first user process will execute
+uint32_t initcode[] = {
+    '0x07', '0x01'
+    
+}
+
 void userinit(void) {
+    // init first user process, basically beside of allocate
+    // place in processes array we copy simple code and just 
+    // jump to it
     struct proc * newproc;
     newproc = allocproc();
+
     // copy start code to user process
-    newproc->state = RUNNABLE;
+    // COPY_CODE_TO_USER_SPACE();
+
+    newproc->trapframe->pc = USER_SPACE_BASE;
+    newproc->trapframe->sp = PROC_SIZE;
+
+    newproc->memsize = PROC_SIZE;
+
+    newproc->state = READY;
 }
 
 void scheduler(void) {

@@ -8,5 +8,9 @@ void consoleinit(void) {
     uart_init();
 }
 
-void printf(void) {
+void printf(const char * s) {
+    while (*s != '\0') {
+        uart_sendchar(*s);
+        s++;
+    }
 }
