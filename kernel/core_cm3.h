@@ -20,6 +20,7 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  *
  ******************************************************************************/
+#include "LPC13xx.h"
 
 #ifndef __CM3_CORE_H__
 #define __CM3_CORE_H__

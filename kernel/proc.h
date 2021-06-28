@@ -1,3 +1,4 @@
+#include "stdint.h"
 // Storing process context
 // Basically it's just like register environment
 // Context used by kernel itself to run next process
@@ -20,20 +21,20 @@ struct context {
     // And address where process should start from
     uint32_t sp;
     uint32_t lr;
-}
+};
 
 // While trapframe used when interrupt happened
 struct trapframe {
     uint32_t sp;
     uint32_t pc;
-}
+};
 
-enum proc_state { UNUSED, USED, SLEEP, READY, RUN, ZOMBIE };
+enum proc_state { UNUSED, USED, SLEEP, READY, RUNNING, ZOMBIE };
 
 struct cpu {
     struct proc * proc;
     struct context context; 
-}
+};
 
 /* Structure to store all information about process
  * To be able to get all needed information about process
@@ -44,5 +45,5 @@ struct proc {
 
     uint32_t memsize; // how much memory process occupied
     struct trapframe * trapframe;
-    struct context * context;
-}
+    struct context context;
+};

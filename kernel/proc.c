@@ -1,4 +1,5 @@
-#include "memlayou.h"
+#include "defs.h"
+#include "memlayout.h"
 #include "proc.h"
 #include "param.h"
 
@@ -15,12 +16,12 @@ static struct proc * allocproc(void) {
         }
     }
     newproc->state = USED;
-    newproc->pid = 1 // allocpid();
+    newproc->pid = 1; // allocpid();
     
     
     // Clean up all process context registers
     newproc->context.lr = (uint32_t)forkret;
-    newproc->context.sp
+    newproc->context.sp;
     return newproc;
 }
 
@@ -29,10 +30,8 @@ void forkret(void) {
 }
 
 // Code that first user process will execute
-uint32_t initcode[] = {
-    '0x07', '0x01'
-    
-}
+uint32_t initcode[] = { 
+};
 
 void userinit(void) {
     // init first user process, basically beside of allocate
@@ -59,13 +58,13 @@ void scheduler(void) {
     /* Iterate through all proccess to check which one is
      * ready to execute => switch context
     */
-    while () {
+    while (1) {
         for (proc = proc; proc < &proc[NPROC]; proc++) {
             if (proc->state == READY) {
                 // make context switch
                 proc->state = RUNNING;
                 cpu->proc = proc;
-                swtch(&cpu->context, &proc->context)
+                swtch(&cpu->context, &proc->context);
             }
         }  
     }

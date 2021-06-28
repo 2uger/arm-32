@@ -1,27 +1,38 @@
-
 TOOLCHAIN = arm-
-COMMON_FLAGS = -O2 -nostdlib -nostartfiles -ffreestanding -Wall -mthumb -mcpu=cortex-m3 -c
+COMMON_FLAGS = -Ikernel/ -O2 -nostdlib -nostartfiles -ffreestanding -Wall -mthumb -mcpu=cortex-m3 -c
+
+CC = $(TOOLCHAIN)gcc
+AS = $(TOOLCHAIN)as
+LD = $(TOOLCHAIN)ld
+OBJCOPY = $(TOOLCHAIN)objcopy
+
+K = kernel
+U = user
+
+SRC = \
+    $K/console.c \
+    $K/core_cm3.c \
+    $K/isr.c \
+    $K/main.c \
+    $K/proc.c \
+    $K/setup.c \
+    $K/uart.c 
+
+OBJS = $(SRC:%.c=%.o)
+
+train: echo $(OBJS)
+
+kernel: $(LD) -o kernel.elf -T kernel/link.ld $(OBJS)
+
+main:
+	$(CC) $(COMMON_FLAGS) $(SRC)
+
+initcode: $(AS) kernel/entry.S
+
 
 help:
-	echo "Compile whole bootloader"
+	echo $(OBJS)
 
-bootloader: system_init.o main.o boot.o platform.o uart.o
-	$(TOOLCHAIN)ld -o bootloader.elf -T memory_layout.ld system_init.o main.o boot.o platform.o
+clean:
+	rm *.o
 
-system_init.o:
-	$(TOOLCHAIN)gcc -c -I. system_init.c -o system_init.o
-
-main.o:
-	$(TOOLCHAIN)gcc -c -I. ../main.c -o main.o
-
-boot.o:
-	$(TOOLCHAIN)as platform/boot.s -o boot.o
-
-uart.o:
-	$(TOOLCHAIN)gcc $(COMMON_FLAGS) -Iplatform/ -Icmsis/ platform/uart.c -o uart.o
-
-timer.o:
-	$(TOOLCHAIN)gcc $(COMMON_FLAGS) -Ipl
-
-
-led_driver.o:

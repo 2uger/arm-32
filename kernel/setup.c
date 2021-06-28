@@ -1,9 +1,12 @@
 #include <core_cm3.h>
+#include "memlayout.h"
+#include "defs.h"
 
-void kernel_setup(void) {
-    vtableinit();
-    timerinit();
-    main();
+void vtableinit(void) {
+    // As kernel contain vector table at first
+    // of itself image, we just need to setup 
+    // right offset
+    SCB->VTOR = KERNEL_SPACE_BASE;
 }
 
 void timerinit(void) {
@@ -12,9 +15,8 @@ void timerinit(void) {
     SysTick->CTRL = 0x7;
 }
 
-void vtableinit(void) {
-    // As kernel contain vector table at first
-    // of itself image, we just need to setup 
-    // right offset
-    SCB->VTOR = KERNEL_SPACE_BASE;
+void kernel_setup(void) {
+    vtableinit();
+    timerinit();
+    main();
 }
