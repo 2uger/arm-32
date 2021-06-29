@@ -3,7 +3,6 @@ SECTIONS
 	 . = 0x00001000; /* Это флэшка (ROM) */
 	.text : {
         *(.text*)
-        a.out (vector_table)
 	} 
 
     .rodata : {

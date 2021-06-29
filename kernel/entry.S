@@ -1,3 +1,5 @@
+#include "memlayout.h"
+
 .type entry, %function
 
 vector_table:
@@ -24,9 +26,9 @@ entry:
     mov r0, #0
     msr PRIMASK, r0
     // Setup kernel stack
-    ldr r0, =0x00010000
+    ldr r0, =0x0001000
     msr MSP, r0
-    //b kernel_setup
+    b kernel_setup
 
     //movs r0, #0x0
     //msr BASEPRI, r0

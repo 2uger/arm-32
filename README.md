@@ -11,7 +11,7 @@ Basically it's super light kernel for Cortex m3 CPU
 
 ### How to use?
 ### Run qemu with kernel to wait for gdb remote:
-- qemu-system-arm -M lm3s811evb -kernel <kernel> -nographic -s -S 
+- qemu-system-arm -M lm3s811evb -kernel kernel.elf -nographic -s -S 
 
 ### Run gdb remote
 - 1 Setup architecture for armv7
