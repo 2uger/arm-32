@@ -43,6 +43,7 @@ struct proc {
     enum proc_state state;
     uint32_t pid;
 
+    uint32_t kstack; // address of process stack in kernel
     uint32_t memsize; // how much memory process occupied
     struct trapframe * trapframe;
     struct context context;

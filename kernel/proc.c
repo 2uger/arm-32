@@ -17,12 +17,25 @@ static struct proc * allocproc(void) {
     }
     newproc->state = USED;
     newproc->pid = 1; // allocpid();
-    
+
+    // allocate memory for process trapframe
+    newproc->trapframe = kalloc(); 
     
     // Clean up all process context registers
     newproc->context.lr = (uint32_t)forkret;
-    newproc->context.sp;
+    // TODO: return normal kernel space stack for process
+    newproc->context.sp = p->kstack + KERNPROCSTACK;
     return newproc;
+}
+
+// preparing proc table while booting
+void procinit(void) {
+    struct proc *proc;
+    
+    for (proc = proc; proc < $proc[NPROC]; proc++) {
+    // TODO: return normal kernel space stack for process
+        p->kstack = 0;
+    }
 }
 
 void forkret(void) {

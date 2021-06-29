@@ -4,6 +4,7 @@
 void scheduler(void);
 void userinit(void);
 void forkret(void);
+void procinit(void);
 
 // console.c
 void consoleinit(void);

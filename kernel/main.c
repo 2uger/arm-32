@@ -9,6 +9,8 @@ void main() {
     printf("Kernel is booting up, just wait and relax!!!");
     printf("\n");
 
+    procinit();
+
     userinit();
     scheduler();
 }
