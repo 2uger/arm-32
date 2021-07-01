@@ -7,39 +7,38 @@ struct cpu;
 
 struct proc proc[NPROC];
 
+uint32_t nextpid = 1;
+
+static uint32_t allocpid() {
+    newpid = nextpid;
+    nextpid += 1;
+    return newpid;
+}
+
+// return 0 if cant find place for new process
 static struct proc * allocproc(void) {
     struct proc * newproc;
     
     for (newproc = proc; newproc < &proc[NPROC]; newproc++) {
         if (newproc->state == UNUSED) {
-            break;
+            newproc->state = USED;
+            newproc->pid = allocpid();
+
+            return newproc;
         }
     }
-    newproc->state = USED;
-    newproc->pid = 1; // allocpid();
-
-    // allocate memory for process trapframe
-    newproc->trapframe = kalloc(); 
-    
-    // Clean up all process context registers
-    newproc->context.lr = (uint32_t)forkret;
-    // TODO: return normal kernel space stack for process
-    newproc->context.sp = p->kstack + KERNPROCSTACK;
-    return newproc;
+    return 0;
 }
 
 // preparing proc table while booting
 void procinit(void) {
     struct proc *proc;
     
-    for (proc = proc; proc < $proc[NPROC]; proc++) {
-    // TODO: return normal kernel space stack for process
-        p->kstack = 0;
+    int i = 1;
+    for (proc = proc; proc < &proc[NPROC]; proc++) {
+        p->ustack = USPACE_BASE_MEM_LOW + PROC_SIZE * i;
+        i++;
     }
-}
-
-void forkret(void) {
-    
 }
 
 // Code that first user process will execute
@@ -51,18 +50,13 @@ void userinit(void) {
     // place in processes array we copy simple code and just 
     // jump to it
     printf("We are in userinit, trying to run first user process!!!!\n");
-    // struct proc * newproc;
-    // newproc = allocproc();
+    struct proc * newproc;
+    newproc = allocproc();
 
-    // // copy start code to user process
-    // // COPY_CODE_TO_USER_SPACE();
+    // copy start code to user process
+    // COPY_CODE_TO_USER_SPACE();
 
-    // newproc->trapframe->pc = USER_SPACE_BASE;
-    // newproc->trapframe->sp = PROC_SIZE;
-
-    // newproc->memsize = PROC_SIZE;
-
-    // newproc->state = READY;
+    newproc->state = READY;
 }
 
 void scheduler(void) {
@@ -73,14 +67,14 @@ void scheduler(void) {
      * ready to execute => switch context
     */
     printf("We are in scheduler, congrats!!!\n");
-    //while (1) {
-    //    for (proc = proc; proc < &proc[NPROC]; proc++) {
-    //        if (proc->state == READY) {
-    //            // make context switch
-    //            proc->state = RUNNING;
-    //            cpu->proc = proc;
-    //            swtch(&cpu->context, &proc->context);
-    //        }
-    //    }  
-    //}
+    while (1) {
+        for (proc = proc; proc < &proc[NPROC]; proc++) {
+            if (proc->state == READY) {
+                // make context switch
+                proc->state = RUNNING;
+                cpu->proc = proc;
+                activate(proc->ustack) 
+            }
+        }  
+    }
 }

@@ -3,7 +3,6 @@
 // proc.c
 void scheduler(void);
 void userinit(void);
-void forkret(void);
 void procinit(void);
 
 // console.c
@@ -14,8 +13,8 @@ void printf(const char * s);
 void uart_init(void);
 void uart_sendchar(const char c);
 
-// switch.c
-void contextswitch();
+// activate.S
+void activate(uint32_t ustack);
 
 // main.c
 void main();
