@@ -16,3 +16,7 @@ Basically it's super light kernel for Cortex m3 CPU
 ### Run gdb remote
 - 1 Setup architecture for armv7
 - 2 Run: target remote localhost:1234
+
+### TODO:
+- Run this code, try to call first system call from user space
+- Write normal printf function
