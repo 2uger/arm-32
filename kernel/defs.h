@@ -7,7 +7,7 @@ void procinit(void);
 
 // console.c
 void consoleinit(void);
-void printf(const char * s);
+void printf(const char *, ...);
 
 // uart.c
 void uart_init(void);
@@ -18,3 +18,6 @@ void activate(uint32_t ustack);
 
 // main.c
 void main();
+
+//string.c
+void memmove(void * dst, const void * src, uint32_t size);

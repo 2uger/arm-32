@@ -10,7 +10,7 @@ struct proc proc[NPROC];
 uint32_t nextpid = 1;
 
 static uint32_t allocpid() {
-    newpid = nextpid;
+    int newpid = nextpid;
     nextpid += 1;
     return newpid;
 }
@@ -36,7 +36,7 @@ void procinit(void) {
     
     int i = 1;
     for (proc = proc; proc < &proc[NPROC]; proc++) {
-        p->ustack = USPACE_BASE_MEM_LOW + PROC_SIZE * i;
+        proc->ustack = USPACE_BASE + PROC_SIZE * i;
         i++;
     }
 }
@@ -54,7 +54,7 @@ void userinit(void) {
     newproc = allocproc();
 
     // copy start code to user process
-    // COPY_CODE_TO_USER_SPACE();
+    memmove(USPACE_BASE, initcode, sizeof(initcode));
 
     newproc->state = READY;
 }
@@ -70,9 +70,9 @@ void scheduler(void) {
     while (1) {
         for (proc = proc; proc < &proc[NPROC]; proc++) {
             if (proc->state == READY) {
-                // make context switch
                 proc->state = RUNNING;
                 cpu->proc = proc;
+                // make context switch
                 activate(proc->ustack) 
             }
         }  
