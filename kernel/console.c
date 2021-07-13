@@ -2,7 +2,7 @@
 // Since we writing it for embedded aims
 // It's all will took output to UART
 
-#include <cstdarg.h>
+#include <stdarg.h>
 
 #include "defs.h"
 
@@ -10,21 +10,21 @@ void consoleinit(void) {
     uart_init();
 }
 
-void putchar(const char * s) {
-    uart_sendchar(*s);
+void pputchar(const char c) {
+    uart_sendchar(c);
 }
 
 void printf(const char * format, ...) {
     va_list ap;
     
     va_start(ap, format);
-    char * c;
-    c = format;
-    while (*c != '\0') {
+    char * str;
+    for (const char * c = format; *c != '\0'; c++) {
         if (*c != '%') {
-            putchar(c);
+            putchar(*c);
             continue;
         }
+        c++;
         switch(*c) {
         case ('d'):
             printint(va_arg(ap, uint32_t), 10);
@@ -36,23 +36,27 @@ void printf(const char * format, ...) {
             // TODO: check if we need to get a pointer uint32_t *
             printptr(va_arg(ap, uint32_t));
             break;
+        case ('c'):
+            pputchar(va_arg(ap, uint32_t));
         case ('s'):
-            putchar(va_arg(ap, char));
+            str = va_arg(ap, uint32_t);
+            while (*str != '\0') {
+                pputchar(*str++);
+            }
             break;
         case ('%'):
-            putchar(*c);
+            pputchar(*c);
             break;
         case default:
-            putchar(*c);
+            pputchar(*c);
             break;
         }
     }
-    
 }
 
 
-void printptr(uint32_t ) {
-
+void printptr(uint32_t p_addr) {
+    printint(p_addr, 16);
 }
 
 static char nums[] = "0123456789abcdef";
@@ -61,13 +65,22 @@ void printint(uint32_t value, uint32_t base) {
     char buf[16];
     uint32_t x;
     x = value;
-    int i = 0;
-    while (value > 0) {
+    uint32_t i = 0;
+    while (x > 0) {
         buf[i] = nums[x % base];
         x /= base;
         i++;
     }
-    putchar('h');
+    switch (base) {
+        case (8): 
+            pputchar('0');
+            pputchar('o');
+            break;
+        case (16):
+            pputchar('0');
+            pputchar('x');
+            break;
+    }
     while (i-- > 0)
-        putchar(buf[i]);
+        pputchar(buf[i]);
 }
