@@ -2,13 +2,20 @@
 .global activate
 activate:
     // save kernel state
-    push {}
+    mrs ip, PSR
+    //push {r4, r5, r6, r7, r8, r9, r10, r11, ip, lr}
+
     
-    msr psp, r0
+    // first argument of calling activate is actually
+    // address of user space stack
+    msr PSP, r0
     mov r0, #3
-    msr control, r0
+    // change process state(thread-unprivilged)
+    msr CONTROL, r0
+    // instruction synchronization barrier
+    isb
 
     // load user context
-    pop {}
+    //pop {r4, r5, r6, r7, r8, r9, r10, r11, lr}
     bx lr
 

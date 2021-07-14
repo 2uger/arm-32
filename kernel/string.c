@@ -1,5 +1,7 @@
+#include "core_cm3.h"
+
 // since it already define in compiler
-void * mmemmove(void * dst, const void * src, uint32_t size) {
+void mmemmove(void * dst, const void * src, uint32_t size) {
     const char * s;
     char * d;
     int n;

@@ -16,9 +16,11 @@ SRC = \
     $K/main.c \
     $K/proc.c \
     $K/setup.c \
+	$K/string.c \
     $K/uart.c 
 
 OBJS = \
+	activate.o \
     entry.o \
     console.o \
     core_cm3.o \
@@ -26,15 +28,19 @@ OBJS = \
     main.o \
     proc.o \
     setup.o \
+	string.o \
     uart.o \
 
-kernel: main initcode
+kernel: main initcode activate
 	$(LD) -o kernel.elf -T kernel/link.ld $(OBJS) 
 	rm *.o
 
-
 main:
 	$(CC) $(COMMON_FLAGS) $(SRC)
+
+activate:
+	$(AS) -mcpu=cortex-m3 kernel/activate.S -o activate.o 
+    
 
 initcode: 
 	$(AS) -mcpu=cortex-m3 kernel/entry.S -o entry.o 

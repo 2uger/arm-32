@@ -2,6 +2,8 @@
 #include "memlayout.h"
 #include "proc.h"
 #include "param.h"
+#include "core_cm3.h"
+
 
 struct cpu; 
 
@@ -36,7 +38,7 @@ void procinit(void) {
     
     int i = 1;
     for (proc = proc; proc < &proc[NPROC]; proc++) {
-        proc->ustack = USPACE_BASE + PROC_SIZE * i;
+        // proc->ustack = USPACE_BASE + PROC_SIZE * i;
         i++;
     }
 }
@@ -49,14 +51,15 @@ void userinit(void) {
     // init first user process, basically beside of allocate
     // place in processes array we copy simple code and just 
     // jump to it
-    printf("We are in userinit, trying to run first user process!!!!\n");
-    struct proc * newproc;
-    newproc = allocproc();
+    kprintf("We are in userinit, trying to run first user process!!!!\n");
+    
+    // struct proc * newproc;
+    // newproc = allocproc();
 
-    // copy start code to user process
-    memmove(USPACE_BASE, initcode, sizeof(initcode));
+    // // copy start code to user process
+    // memmove(USPACE_BASE, initcode, sizeof(initcode));
 
-    newproc->state = READY;
+    // newproc->state = READY;
 }
 
 void scheduler(void) {
@@ -66,15 +69,15 @@ void scheduler(void) {
     /* Iterate through all proccess to check which one is
      * ready to execute => switch context
     */
-    printf("We are in scheduler, congrats!!!\n");
-    while (1) {
-        for (proc = proc; proc < &proc[NPROC]; proc++) {
-            if (proc->state == READY) {
-                proc->state = RUNNING;
-                cpu->proc = proc;
-                // make context switch
-                activate(proc->ustack) 
-            }
-        }  
-    }
+    kprintf("We are in scheduler, congrats!!!\n");
+    // while (1) {
+    //     for (proc = proc; proc < &proc[NPROC]; proc++) {
+    //         if (proc->state == READY) {
+    //             proc->state = RUNNING;
+    //             cpu->proc = proc;
+    //             // make context switch
+    //             activate(proc->ustack) 
+    //         }
+    //     }  
+    // }
 }

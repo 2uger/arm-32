@@ -1,24 +1,26 @@
 SECTIONS
 {
-	 . = 0x00001000; /* Это флэшка (ROM) */
+    /* Load it directly to ram and start executing */
+	 . = 0x20000000;
+    _kernel_start = .;
 	.text : {
-        *(.text*)
+        *(.text .text.*)
 	} 
 
     .rodata : {
-        . = ALIGN(8);
         *(.rodata*) 
     }
     
-    data : {
-        . = ALIGN(8);
+    .data : {
+        . = ALIGN(4);
         *(.sdata .sdata.*) /* do not need to distinguish this from .data */
-        . = ALIGN(8);
+        . = ALIGN(4);
         *(.data .data.*)
     }
 
     .bss : {
-        . = ALIGN(8);
+        . = ALIGN(4);
         *(.bss .bss.*)
     }
+    _kernel_end = .;
 }
