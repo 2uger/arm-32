@@ -1,5 +1,5 @@
 // Contain all function declaration
-#include "core_cm3.h"
+#include <stdint.h>
 
 // proc.c
 void scheduler(void);
@@ -8,7 +8,7 @@ void procinit(void);
 
 // console.c
 void consoleinit(void);
-void kprintf(const char *, ...);
+void kprintf(char *);
 void pputchar(const char);
 
 // uart.c

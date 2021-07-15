@@ -1,8 +1,9 @@
+#include <stdint.h>
+
 #include "defs.h"
 #include "memlayout.h"
 #include "proc.h"
 #include "param.h"
-#include "core_cm3.h"
 
 
 struct cpu; 
@@ -38,13 +39,14 @@ void procinit(void) {
     
     int i = 1;
     for (proc = proc; proc < &proc[NPROC]; proc++) {
-        // proc->ustack = USPACE_BASE + PROC_SIZE * i;
+        proc->ustack = USPACE_BASE + PROC_SIZE * i;
         i++;
     }
 }
 
 // Code that first user process will execute
 uint32_t initcode[] = { 
+   0xDF, 0x02 
 };
 
 void userinit(void) {
@@ -53,13 +55,13 @@ void userinit(void) {
     // jump to it
     kprintf("We are in userinit, trying to run first user process!!!!\n");
     
-    // struct proc * newproc;
-    // newproc = allocproc();
+    struct proc * newproc;
+    newproc = allocproc();
 
-    // // copy start code to user process
-    // memmove(USPACE_BASE, initcode, sizeof(initcode));
+    // copy start code to user process
+    mmemmove(USPACE_BASE, initcode, sizeof(initcode));
 
-    // newproc->state = READY;
+    newproc->state = READY;
 }
 
 void scheduler(void) {
@@ -70,14 +72,14 @@ void scheduler(void) {
      * ready to execute => switch context
     */
     kprintf("We are in scheduler, congrats!!!\n");
-    // while (1) {
-    //     for (proc = proc; proc < &proc[NPROC]; proc++) {
-    //         if (proc->state == READY) {
-    //             proc->state = RUNNING;
-    //             cpu->proc = proc;
-    //             // make context switch
-    //             activate(proc->ustack) 
-    //         }
-    //     }  
-    // }
+    while (1) {
+        for (proc = proc; proc < &proc[NPROC]; proc++) {
+            if (proc->state == READY) {
+                proc->state = RUNNING;
+                cpu->proc = proc;
+                // make context switch
+                activate(proc->ustack);
+            }
+        }  
+    }
 }

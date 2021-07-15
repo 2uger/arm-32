@@ -1,11 +1,10 @@
 SECTIONS
 {
     /* Load it directly to ram and start executing */
-	 . = 0x20000000;
-    _kernel_start = .;
-	.text : {
+    . = 0x0;
+    .text : {
         *(.text .text.*)
-	} 
+    }
 
     .rodata : {
         *(.rodata*) 

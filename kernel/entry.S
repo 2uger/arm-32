@@ -1,23 +1,11 @@
 .type entry, %function
 
-vector_table:
+kernel_vector:
     .word 0x0001000   // PC
     .word entry       // entry point
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
-    .word svc_handler
+    .word nmi_handler
+    .word hardfault_handler
 
-.text
 .global entry
 entry:
     // Disable interrupts beside NMI and HardFault
@@ -26,11 +14,18 @@ entry:
     // Setup kernel stack
     ldr r0, =0x2001000
     msr MSP, r0
-    b kernel_setup
+    ldr r1, =kernel_setup
+    bx r1
 
     //movs r0, #0x0
     //msr BASEPRI, r0
     //msr CONTROL, r0 // Get into user mode
+
+nmi_handler:
+    nop
+
+hardfault_handler:
+    nop
 
 svc_handler:
     nop

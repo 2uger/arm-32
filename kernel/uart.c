@@ -8,7 +8,7 @@ static volatile unsigned int * const UART_DR = (unsigned int *)0x4000c000;
 void uart_init(void) {
 }
 
-void uart_sendchar(const char c) {
+void uart_sendchar(char c) {
     *UART_DR = c;
 }
 

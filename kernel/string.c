@@ -1,4 +1,4 @@
-#include "core_cm3.h"
+#include "stdint.h"
 
 // since it already define in compiler
 void mmemmove(void * dst, const void * src, uint32_t size) {

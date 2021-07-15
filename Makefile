@@ -20,8 +20,8 @@ SRC = \
     $K/uart.c 
 
 OBJS = \
-	activate.o \
     entry.o \
+	activate.o \
     console.o \
     core_cm3.o \
     isr.o \

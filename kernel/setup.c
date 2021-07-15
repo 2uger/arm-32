@@ -1,4 +1,3 @@
-#include <core_cm3.h>
 #include "memlayout.h"
 #include "defs.h"
 
@@ -18,5 +17,6 @@ void timerinit(void) {
 void kernel_setup(void) {
     vtableinit();
     timerinit();
+    kprintf("Hello world from kernel\n");
     main();
 }
