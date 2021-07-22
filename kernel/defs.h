@@ -8,12 +8,12 @@ void procinit(void);
 
 // console.c
 void consoleinit(void);
-void kprintf(char *);
+void kprintf(char *, ...);
 void pputchar(const char);
 
 // uart.c
 void uart_init(void);
-void uart_sendchar(const char c);
+void uart_sendchar(char);
 
 // activate.S
 void activate(uint32_t ustack);

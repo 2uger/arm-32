@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "defs.h"
 #include "memlayout.h"
@@ -6,7 +7,7 @@
 #include "param.h"
 
 
-struct cpu; 
+struct cpu cpu; 
 
 struct proc proc[NPROC];
 
@@ -35,11 +36,13 @@ static struct proc * allocproc(void) {
 
 // preparing proc table while booting
 void procinit(void) {
-    struct proc *proc;
+    struct proc *p;
     
     int i = 1;
-    for (proc = proc; proc < &proc[NPROC]; proc++) {
-        proc->ustack = USPACE_BASE + PROC_SIZE * i;
+    for (p = proc; p < &proc[NPROC]; p++) {
+        p->ustack = USPACE_BASE + PROC_SIZE * i;
+        kprintf("Process %d is locating at %p\n", i, p->ustack);
+        p->state = UNUSED;
         i++;
     }
 }
@@ -59,26 +62,28 @@ void userinit(void) {
     newproc = allocproc();
 
     // copy start code to user process
-    mmemmove(USPACE_BASE, initcode, sizeof(initcode));
+    mmemmove((uint32_t *)USPACE_BASE, initcode, sizeof(initcode));
 
     newproc->state = READY;
+    kprintf("Pid of first user process is %d\n", newproc->pid);
 }
 
 void scheduler(void) {
-    struct proc * proc;
-    struct cpu * cpu;
-    
+    struct proc * p;
+ 
     /* Iterate through all proccess to check which one is
      * ready to execute => switch context
     */
     kprintf("We are in scheduler, congrats!!!\n");
-    while (1) {
-        for (proc = proc; proc < &proc[NPROC]; proc++) {
-            if (proc->state == READY) {
-                proc->state = RUNNING;
-                cpu->proc = proc;
+    activate(23000);
+    while (true) {
+        for (p = proc; p < &proc[NPROC]; p++) {
+            if (p->state == READY) {
+                kprintf("Proc with READY state");
+                p->state = RUNNING;
+                cpu.proc = p;
                 // make context switch
-                activate(proc->ustack);
+                activate(p->ustack);
             }
         }  
     }

@@ -17,6 +17,5 @@ void timerinit(void) {
 void kernel_setup(void) {
     vtableinit();
     timerinit();
-    kprintf("Hello world from kernel\n");
     main();
 }

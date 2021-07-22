@@ -14,7 +14,7 @@ activate:
     msr CONTROL, r0
     // instruction synchronization barrier
     isb
-
+    svc #3
     // load user context
     //pop {r4, r5, r6, r7, r8, r9, r10, r11, lr}
     bx lr

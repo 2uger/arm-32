@@ -4,9 +4,7 @@
 // here we jump to the user mode
 void main() {
     consoleinit();  
-    kprintf('\n');
-    kprintf("Kernel is booting up, just wait and relax!!!");
-    kprintf('\n');
+    kprintf("Kernel is booting up, just wait and relax!!!\n");
 
     procinit();
 

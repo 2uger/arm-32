@@ -46,45 +46,43 @@ void printptr(uint32_t p_addr) {
 }
 
 
-void kprintf(char * format) {
-    for (char * c = format; *c != '\0'; c++) {
-        pputchar(*c);
-        continue;
+void kprintf(char * format, ...) {
+    va_list ap;
+    va_start(ap, format);
+    char * str;
+    char * c;
+    for(c = format; *c != '\0'; c++){
+        if (*c != '%') {
+            pputchar(*c);
+            continue;
+        }
+        c++;
+        switch(*c) {
+        case ('d'):
+            printint(va_arg(ap, uint32_t), 10);
+            break;
+        case ('x'):
+            printint(va_arg(ap, uint32_t), 16);
+            break;
+        case ('p'):
+            // TODO: check if we need to get a pointer uint32_t *
+            printptr(va_arg(ap, uint32_t));
+            break;
+        case ('c'):
+            pputchar(va_arg(ap, uint32_t));
+        case ('s'):
+            str = va_arg(ap, uint32_t);
+            while (*str != '\0') {
+                pputchar(*str++);
+            }
+            break;
+        case ('%'):
+            pputchar(*c);
+            break;
+        default:
+            pputchar(*c);
+            break;
+        }
     }
-//     char * str;
-//     for (const char * c = format; *c != '\0'; c++) {
-//         pputchar(*c);
-//         continue;
-//         if (*c != '%') {
-//             pputchar(*c);
-//             continue;
-//         }
-//         c++;
-//         switch(*c) {
-//         case ('d'):
-//             printint(va_arg(ap, uint32_t), 10);
-//             break;
-//         case ('x'):
-//             printint(va_arg(ap, uint32_t), 16);
-//             break;
-//         case ('p'):
-//             // TODO: check if we need to get a pointer uint32_t *
-//             printptr(va_arg(ap, uint32_t));
-//             break;
-//         case ('c'):
-//             pputchar(va_arg(ap, uint32_t));
-//         case ('s'):
-//             str = va_arg(ap, uint32_t);
-//             while (*str != '\0') {
-//                 pputchar(*str++);
-//             }
-//             break;
-//         case ('%'):
-//             pputchar(*c);
-//             break;
-//         default:
-//             pputchar(*c);
-//             break;
-//         }
-//     }
+    va_end(format);
 }

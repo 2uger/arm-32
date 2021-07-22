@@ -11,14 +11,11 @@ SECTIONS
     }
     
     .data : {
-        . = ALIGN(4);
         *(.sdata .sdata.*) /* do not need to distinguish this from .data */
-        . = ALIGN(4);
         *(.data .data.*)
     }
 
     .bss : {
-        . = ALIGN(4);
         *(.bss .bss.*)
     }
     _kernel_end = .;
