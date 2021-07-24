@@ -38,7 +38,7 @@ init_disk()
 }
 
 int 
-read_disk(int blockn, void *buffer, int size)
+read_disk(int blockn, int blocks_num, void *buffer)
 {
     // how many bytes we actually read from disk
     int byte_counter = 0;
@@ -47,7 +47,7 @@ read_disk(int blockn, void *buffer, int size)
     b = DISK + blockn;
 
     char *buf = buffer;
-    while (size) {
+    while (blocks_num) {
         for (int i = 0; i < BLOCK_SIZE; i++) {
             if (!size) {
                 *buf = '\0';
@@ -56,8 +56,8 @@ read_disk(int blockn, void *buffer, int size)
             *buf = b->data[i]; 
             buf++;
             byte_counter++;
-            size--;
         }
+        blocks_num--;
         b++;
     }
     return byte_counter;

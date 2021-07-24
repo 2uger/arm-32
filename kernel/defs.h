@@ -23,3 +23,6 @@ void main();
 
 //string.c
 void mmemmove(void * dst, const void * src, uint32_t size);
+
+// panic.c
+void panic(char *);
