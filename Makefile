@@ -11,7 +11,6 @@ U = user
 
 SRC = \
     $K/console.c \
-    $K/core_cm3.c \
     $K/isr.c \
     $K/main.c \
     $K/proc.c \
@@ -23,7 +22,6 @@ OBJS = \
     entry.o \
 	activate.o \
     console.o \
-    core_cm3.o \
     isr.o \
     main.o \
     proc.o \
