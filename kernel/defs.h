@@ -26,3 +26,8 @@ void mmemmove(void * dst, const void * src, uint32_t size);
 
 // panic.c
 void panic(char *);
+
+// lock.c
+void init_lock(struct lock *lck, char *);
+void acquire(struct lock *);
+void release(struct lock *);

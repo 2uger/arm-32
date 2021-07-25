@@ -2,6 +2,11 @@
 // Buffer cache actually hold information of one disk block
 // Cache work by simple principle: LRU
 
+// binit -- init buffer cache
+// bread -- read a disk block
+// bwrite -- write a disk block
+// brelease -- release disk block
+
 // TODO:
 // *** Need interface to sd card, emulate it with array and some calls
 // *** Start with simple buffer cache, double linked list
@@ -12,6 +17,7 @@
 
 struct CacheBuffer {
     uint32_t valid;
+    uint16_t dirty; // data should we written into disk
 
     uint32_t dev; // device number
     uint32_t blockn; // block number on disk
@@ -34,6 +40,7 @@ struct {
 } bcache;
 
 // Init cache buffer
+// Actually initialize list like a cyclic loop
 void
 binit(void)
 {
@@ -46,6 +53,8 @@ binit(void)
         b->prev->next = b;
         bcache.tail = b;
     }
+    b->next = head;
+    b->next->prev = b;
 }
 
 // Scan through array and find 
@@ -108,9 +117,18 @@ brelease(struct CacheBuffer *buf)
 {
     buf->refcnt--;
     // check if buffer is not needed anymore
-    if (buf->refcnt == 0) {
-        // TODO: check if removed buffer is tail or head
+    // buffer is most recently used, move it to the head of list
+    if (buf->refcnt == 0 && head != buf) {
+        if (tail == buf)
+            tail = tail->prev;
+        // remove buffer
         buf->prev->next = buf->next;
         buf->next->prev = buf->prev; 
+        
+        // change head pointer
+        head->prev->next = buf;
+        head->prev = buf;
+        buf->next = head;
+        head = buf;
     } 
 }

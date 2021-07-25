@@ -1,2 +1,14 @@
 // Write down all usefull features of CMSIS and CPU itself
 // Maybe some piece of code
+
+Thoughts on locks:
+-- Lock in simple way just a mechanism to prevent multiple threads 
+    take the same structure to avoid miss read
+    (looping over array to find demanding buffer, when find it 
+    (other thread take this buffer and change information => phhhh)
+-- Make a lock as simple flag to represent is struct using by someone
+-- When acquire lock => remove interrupts
+    (it's more about interrupt
+    (because only after them we will switch to another thread)
+    and just update lock counter;
+-- When release, make the same but update lock counter in another way
