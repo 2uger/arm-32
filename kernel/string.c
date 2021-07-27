@@ -1,7 +1,9 @@
 #include "stdint.h"
 
 // since it already define in compiler
-void mmemmove(void * dst, const void * src, uint32_t size) {
+void
+mmemmove(void * dst, const void * src, uint32_t size)
+{
     const char * s;
     char * d;
     int n;
@@ -24,4 +26,17 @@ void mmemmove(void * dst, const void * src, uint32_t size) {
             n--;
         }
     }
+}
+
+char*
+sstrcpy(char *s, const char *dst, uint32_t size)
+{
+    char *os;
+    os = s;
+    if (size <= 0)
+        return os;
+    while (size--) {
+        *s++ = *dst++;
+    }
+    return os;
 }

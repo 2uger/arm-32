@@ -14,21 +14,7 @@
 // follow on last recently buffer
 
 #include "param.h"
-
-struct CacheBuffer {
-    uint32_t valid;
-    uint16_t dirty; // data should we written into disk
-
-    uint32_t dev; // device number
-    uint32_t blockn; // block number on disk
-    
-    uint16_t refcnt; // to not use buffer for different disk block
-
-    uint32_t data[BLOCK_SIZE]; // actual data
-    
-    struct CachBuffer *next;
-    struct CachBuffer *prev;
-}
+#include "buf.h"
 
 struct {
     struct CacheBuffer buf[BCACHE_NUM];
@@ -48,13 +34,13 @@ binit(void)
     bcache.head = bcache.buf;
     bcache.tail = bcache.buf;
 
-    for (b = &bcache.buf[1]; b < bcache.buf+BCACHE_NUM; b++) {
+    for (b = bcache.buf+1; b < bcache.buf+BCACHE_NUM; b++) {
         b->prev = bcache.tail;
         b->prev->next = b;
         bcache.tail = b;
     }
-    b->next = head;
-    b->next->prev = b;
+    bcache.tail->next = bcache.head;
+    bcache.head->prev = bcache.tail;
 }
 
 // Scan through array and find 
@@ -109,7 +95,7 @@ void
 bwrite(struct CacheBuffer *buf)
 {
     // Write buffer content into sd card
-    write_disk(buf->blockn, buf->data, sizeof(buf->data)-1);
+    write_disk(buf->blockn, buf->data, sizeof(buf->data));
 }
 
 void
@@ -118,17 +104,17 @@ brelease(struct CacheBuffer *buf)
     buf->refcnt--;
     // check if buffer is not needed anymore
     // buffer is most recently used, move it to the head of list
-    if (buf->refcnt == 0 && head != buf) {
-        if (tail == buf)
-            tail = tail->prev;
+    if (buf->refcnt == 0 && bcache.head != buf) {
+        if (bcache.tail == buf)
+            bcache.tail = bcache.tail->prev;
         // remove buffer
         buf->prev->next = buf->next;
         buf->next->prev = buf->prev; 
         
         // change head pointer
-        head->prev->next = buf;
-        head->prev = buf;
-        buf->next = head;
-        head = buf;
+        bcache.head->prev->next = buf;
+        bcache.head->prev = buf;
+        buf->next = bcache.head;
+        bcache.head = buf;
     } 
 }
