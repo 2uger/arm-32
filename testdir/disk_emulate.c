@@ -13,6 +13,13 @@ struct block {
 struct block DISK[BLOCKS_NUM];
 
 void
+clean_block(struct block *b)
+{
+    for (int i = 0; i < BLOCK_SIZE; i++)
+        b->data[i] = '0';
+}
+
+void
 print_disk(void)
 {
     struct block *b;
@@ -48,9 +55,9 @@ read_disk(int blockn, int blocks_num, void *buffer)
     b = DISK + blockn;
 
     char *buf = buffer;
-    while (blocks_num >= 1) {
+    while (blocks_num) {
+        printf("REading from disk\n");
         for (int i = 0; i < BLOCK_SIZE; i++) {
-            
             *buf = b->data[i]; 
             buf++;
             byte_counter++;
@@ -78,10 +85,15 @@ write_disk(int blockn, void *buffer, int size)
     b = DISK + blockn;
 
     int data_size = size;
-    while (data_size >= 1) {
+    while (data_size) {
+        clean_block(b);
         for (int i = 0; i < BLOCK_SIZE; i++) {
             if (!data_size)
                 break;
+            if (*buf == '\0') {
+                b->data[i] = '0';
+                continue;
+            }
             b->data[i] = *buf;
             buf++;
             byte_counter++;
@@ -92,3 +104,18 @@ write_disk(int blockn, void *buffer, int size)
     return byte_counter; 
 }
 
+//int
+//main(void)
+//{
+//    init_disk ();
+//    print_disk ();
+//    char m[] = "Hello world computer is coooooooooool";
+//    printf("%d\n", write_disk (0, m, sizeof(m) - 1)); 
+//    //write_disk (1, m, sizeof(m) - 1); 
+//    char n[] = "New string";
+//    write_disk(1, n, sizeof(n) - 1);
+//    print_disk ();
+//    char big_n[36];
+//    read_disk(1, 1, big_n);
+//    printf("%s\n", big_n);
+//}

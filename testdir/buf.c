@@ -55,7 +55,6 @@ binit(void)
     bcache.tail = bcache.buf;
 
     for (b = bcache.buf+1; b < bcache.buf+BCACHE_NUM; b++) {
-        printf("%p\n", b);
         b->prev = bcache.tail;
         b->prev->next = b;
         bcache.tail = b;
@@ -114,7 +113,7 @@ void
 bwrite(struct CacheBuffer *buf)
 {
     // Write buffer content into sd card
-    write_disk(buf->blockn, buf->data, sizeof(buf->data)-1);
+    write_disk(buf->blockn, buf->data, sizeof(buf->data));
 }
 
 void
@@ -138,25 +137,52 @@ brelease(struct CacheBuffer *buf)
     } 
 }
 
+char*
+sstrcpy(char *s, const char *dst, int size)
+{
+    char *os;
+    os = s;
+    if (size <= 0)
+        return os;
+    while (size--) {
+        *s++ = *dst++;
+    }
+    *s = '\0';
+    return os;
+}
+
+void
+test_buffer_1()
+{
+    binit ();
+    init_disk ();
+    print_disk ();
+    struct CacheBuffer *cb;
+    cb = bread(0, 8);
+    char s[] = "Hello computer hello computer hello computer";
+    sstrcpy(cb->data, s, sizeof(s));
+    bwrite(cb);
+    write_disk(2, "HHello world actually  hello hello computerello", 32);
+    print_disk ();
+}
+
 int
 main()
 {
-    binit ();
-    struct CacheBuffer *cb;
-    cb = bread(0, 8);
-    printf("%s\n", cb->data);
-    printf("%d\n", cb->valid);
-    printf("%d\n", cb->blockn);
-    cb = bcache.head;
-    int cnt = 0;
-    while (cnt != 20) {
-        cb = cb->next;
-        printf("%p\n", cb);
-        cnt++;
-    }
-    printf("%d\n", cnt);
+    test_buffer_1();
+    //printf("%d\n", cb->valid);
+    //printf("%d\n", cb->blockn);
+    //cb = bcache.head;
+    //int cnt = 0;
+    //while (cnt != 20) {
+    //    cb = cb->next;
+    //    printf("%p\n", cb);
+    //    cnt++;
+    //}
+    //printf("%d\n", cnt);
     //printf("Buffer data is %s\n", buf->data);
     //strcpy(buf->data, "MAC");//"Change string for what soever reason hello");
     //bwrite(buf);
     //print_disk ();
 }
+
