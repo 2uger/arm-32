@@ -7,17 +7,23 @@
 
 #include "defs.h"
 
-void consoleinit(void) {
+void
+consoleinit(void)
+{
     uart_init();
 }
 
-void pputchar(const char c) {
+void
+pputchar(const char c)
+{
     uart_sendchar(c);
 }
 
 static char nums[] = "0123456789abcdef";
 
-void printint(uint32_t value, uint32_t base) {
+void
+printint(uint32_t value, uint32_t base)
+{
     char buf[16];
     uint32_t x;
     x = value;
@@ -41,12 +47,16 @@ void printint(uint32_t value, uint32_t base) {
         pputchar(buf[i]);
 }
 
-void printptr(uint32_t p_addr) {
+void
+printptr(uint32_t p_addr)
+{
     printint(p_addr, 16);
 }
 
 
-void kprintf(char * format, ...) {
+void
+kprintf(char * format, ...)
+{
     va_list ap;
     va_start(ap, format);
     char * str;

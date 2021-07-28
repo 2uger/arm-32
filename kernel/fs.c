@@ -2,7 +2,7 @@
 
 // disk inode structure
 struct dinode {
-    uint16_t type; // identify type of information(file, dir, device). 0 means free.
+    uint8_t type; // identify type of information(file, dir, device). 0 means free.
     uint16_t nlink; // how much dirs link to that file
     uint32_t size; // how much data in file
     uint32_t addrs[FILE_BLOCKS_NUM]; // addresses of all file's blocks
@@ -19,5 +19,13 @@ struct inode {
     uint16_t nlink; // how much dirs link to that file
     uint32_t size; // how much data in file
     uint32_t addrs[FILE_BLOCKS_NUM]; // addresses of all file's blocks
+}
+
+#define INODES_PER_BLOCK (BLOCK_SIZE / sizeof(struct dinode))
+
+// allocating new inode on disk
+struct inode*
+ialloc(uint32_t dev, uint8_t type)
+{
     
 }

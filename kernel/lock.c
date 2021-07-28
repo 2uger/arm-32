@@ -12,16 +12,14 @@ init_lock(struct lock *lck, char *name)
 void
 acquire(struct lock *lck)
 {
-    intr_disable ();
-    
-    if (lck->lock)
-        panic("Lock busy");
-    lck->locks = 1;
+    while (_set_and_test(&lck->lock, 1) == 1)
+        ;
 }
 
 void
 release(struct lock *lck)
 {
-    lck->locks = 0;
-    intr_enable ();
+    lck->lock = 0;
 }
+
+

@@ -2,12 +2,15 @@
 
 // Serve first user process and others initialization
 // here we jump to the user mode
-void main() {
-    consoleinit();  
+void
+main()
+{
+    consoleinit ();  
+    binit ()
     kprintf("Kernel is booting up, just wait and relax!!!\n");
 
-    procinit();
+    procinit ();
 
-    userinit();
-    scheduler();
+    userinit ();
+    scheduler ();
 }
