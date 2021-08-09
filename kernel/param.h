@@ -5,3 +5,4 @@
 // Files 
 #define BLOCK_SIZE 512
 #define FILE_BLOCKS_NUM 12
+#define NINODES 64 // inodes amount

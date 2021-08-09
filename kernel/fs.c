@@ -1,7 +1,6 @@
 // Simple file system
 // Basic structure on disk:
-// SPB -> INODES -> BITMAP -> BLOCKS
-// Simple as that
+// SPB :: INODES :: BITMAP :: BLOCKS
 
 #include "defs.h"
 #include "param.h"
@@ -26,7 +25,13 @@ readspblock(uint32_t dev, struct spblock *spb)
 //    brelease(b);
 //}
 
-// allocatin new block on disk
+
+// Functions to work with blocks on disk
+// balloc - allocating block on disk
+//          setup right bitmap bit
+// bfree - actually just freeing bitmap bit
+
+// allocating new block on disk
 uint32_t
 balloc(uint32_t dev)
 {
@@ -50,18 +55,18 @@ balloc(uint32_t dev)
     panic("out of disk block");
 }
 
-// free disk block
+// freeing disk block
 static void
 bfree(uint32_t dev, uint32_t block_num) {
     // find bitmap bit for current block
     // make it 0
     struct buf *b;
-    b = bread(dev, (BMBLOCK(b, sb));
+    b = bread(dev, (BMBLOCK(b, sb)));
     uint32_t bm = block_num % BPB;
     uint32_t m = 1 << (bm % 8);
     if (b->data[bm/8] & m == 0) // already free
         panic("freeing free block");
-    // 0001000 -> 11101111
+    // 000-1-000 -> 000-0-000
     b->data[bm/8] &= ~m;
     bwrite(b);
     brelease(b);
@@ -98,8 +103,19 @@ ialloc(uint32_t dev, uint8_t type)
 
 // copying in memory inode to disk
 void
-iupdate(struct inode*)
+iupdate(struct inode* in)
 {
+    struct CacheBuffer *b;
+    struct dinode *dn;
+
+    b = bget(inode->dev, inode->inum);
+    dn = (struct dinode *)b->data + inode->inum&INODES_PER_BLOCK;
+    dn->type = in->type;
+    dn->nlink = dn->nlink;
+    dn->size = in->size;
+    mmemmove(dn->addrs, in->addrs, sizeof(in->addrs));
+    bwrite(b);
+    brelease(b);
 }
 
 
@@ -122,5 +138,14 @@ ilock(struct inode *inode)
 void
 iunlock(struct inode *inode)
 {
+}
+
+
+// drop memory reference
+// if no more nlinks to inode => clean it pu
+void
+iput(struct inode *ip)
+{
+
 }
 

@@ -13,6 +13,8 @@
 // *** Think about how double linked list should be init so we can
 // follow on last recently buffer
 
+#include <stint.h>
+
 #include "param.h"
 #include "buf.h"
 
@@ -48,7 +50,7 @@ struct CacheBuffer *
 bget(uint32_t dev, uint32_t blockn)
 {
     //Scan buffer array, if find return, else allocate a new one
-    CacheBuffer *buf;
+    struct CacheBuffer *buf;
     buf = bcache.head;
     
     while (buf <= bcache.tail) {

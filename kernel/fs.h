@@ -9,9 +9,9 @@
 #define IBLOCK(i, sb) ((i/INODES_PER_BLOCK) + sb.inodes_start)
 
 // bitmap bits per block
-#define BPB (BLOCK_SIZE * 8) // as measuring block size in bytes
+#define BPB (BLOCK_SIZE * 8) // as we measure block size in bytes
 
-// block containing bitmap for block
+// block containing bitmap bit for block
 #define BMBLOCK(b, spb) ((b/BPB) + spb.bitmap_start)
 
 
@@ -40,6 +40,7 @@ struct inode {
     uint32_t dev; // device number
     uint32_t inum; // i node number
     uint32_t ref_count; // count all reference from C code(pointers), remove when 0
+    uint8_t valid; // usage: when find free place in inode table, but dont read from disk
 
     // same structure as in disk i node
     uint16_t type; // identify type of information(file, dir, device). 0 means free.
