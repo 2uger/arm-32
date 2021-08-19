@@ -1,6 +1,7 @@
 // Contain all function declaration
 #include <stdint.h>
-#include <buf.h>
+
+#include "buf.h"
 
 // proc.c
 void scheduler(void);
