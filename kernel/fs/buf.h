@@ -1,7 +1,11 @@
 #ifndef BUF_H
 #define BUF_H
 
-#define BCACHE_NUM 16
+#define BCACHE_NUM 4 
+#define BLOCK_SIZE 4 
+
+typedef int uint32_t;
+typedef int uint16_t;
 
 struct CacheBuffer {
     uint32_t valid;
@@ -16,6 +20,6 @@ struct CacheBuffer {
     
     struct CacheBuffer *next;
     struct CacheBuffer *prev;
-}
+};
 
 #endif

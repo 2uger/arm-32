@@ -12,10 +12,7 @@
 // *** Start with simple buffer cache, double linked list
 // *** Think about how double linked list should be init so we can
 // follow on last recently buffer
-
-#include <stint.h>
-
-#include "param.h"
+#include <stdio.h>
 #include "buf.h"
 
 struct {
@@ -73,7 +70,7 @@ bget(uint32_t dev, uint32_t blockn)
             return buf;
         }
     }
-    panic("Cant allocate new free cache buffer\n");
+    printf("Cant allocate new free cache buffer\n");
     
 }
 
@@ -84,12 +81,14 @@ bread(uint32_t dev, uint32_t blockn)
     // Call bget, if it's new, call read routine from sd card
     struct CacheBuffer *buf;
     
-    buf = bget(dev, blockno);
+    buf = bget(dev, blockn);
     if (!buf->valid) {
         // read into buffer from disk
+        printf("Block is not valid\n");
         read_disk(blockn, 1, buf->data); 
         buf->valid = 1;
     }
+    printf("%s\n", buf->data);
     return buf;
 }
 
@@ -119,4 +118,30 @@ brelease(struct CacheBuffer *buf)
         buf->next = bcache.head;
         bcache.head = buf;
     } 
+}
+
+void
+print_buffer_addrs(void)
+{
+    printf("Head is point to %p\n", bcache.head);
+    printf("Tail is point to %p\n", bcache.tail);
+    for (int i=0; i<BCACHE_NUM; i++) {
+        printf("%p\n", &bcache.buf[i]);
+    }
+    test_buffer();
+}
+
+void
+test_buffer(void)
+{
+    struct CacheBuffer *buf;
+    struct CacheBuffer *buf1;
+    buf = bread(0, 1);
+    buf1 = bread(0, 0);
+    printf("%p\n", buf);
+    printf("%p\n", buf1);
+    printf("%d\n", buf->dev);
+    printf("%s\n", buf->data);
+    brelease(buf1);
+    printf("%p\n", bcache.head);
 }

@@ -1,10 +1,11 @@
 // Simple emulator of hard drive
 
 #include <stdio.h>
-#include "defs.h"
 
-#define BLOCKS_NUM 16
-#define BLOCK_SIZE 32 
+#define BLOCKS_NUM 4
+#define BLOCK_SIZE 16 
+
+typedef int uint32_t;
 
 struct block {
     char data[BLOCK_SIZE];        
@@ -33,7 +34,7 @@ print_disk(void)
 }
 
 void 
-init_disk()
+init_disk(void)
 {
     struct block *b;
     for (b = DISK; b < &DISK[BLOCKS_NUM]; b++) {
@@ -56,7 +57,6 @@ read_disk(uint32_t blockn, uint32_t blocks_num, void *buffer)
 
     char *buf = buffer;
     while (blocks_num) {
-        printf("REading from disk\n");
         for (uint32_t i = 0; i < BLOCK_SIZE; i++) {
             *buf = b->data[i]; 
             buf++;
@@ -64,6 +64,9 @@ read_disk(uint32_t blockn, uint32_t blocks_num, void *buffer)
         }
         blocks_num--;
         b++;
+        // avoid reading from DISK bound
+        if (b > &DISK[BLOCKS_NUM])
+            break;
     }
     return byte_counter;
 } 
@@ -85,37 +88,22 @@ write_disk(uint32_t blockn, void *buffer, uint32_t size)
     b = DISK + blockn;
 
     uint32_t data_size = size;
+    uint32_t stop_write = 0;
     while (data_size) {
         clean_block(b);
-        for (uint32_t i = 0; i < BLOCK_SIZE; i++) {
-            if (!data_size)
-                break;
-            if (*buf == '\0') {
-                b->data[i] = '0';
-                continue;
-            }
+        for (uint32_t i=0; i<BLOCK_SIZE; i++) {
             b->data[i] = *buf;
             buf++;
             byte_counter++;
             data_size--;
+            if (data_size == 1) {
+                stop_write = 1;
+                break;
+            }
         }
+        if (stop_write)
+            break;
         b++;
     }
     return byte_counter; 
 }
-
-//int
-//main(void)
-//{
-//    init_disk ();
-//    print_disk ();
-//    char m[] = "Hello world computer is coooooooooool";
-//    printf("%d\n", write_disk (0, m, sizeof(m) - 1)); 
-//    //write_disk (1, m, sizeof(m) - 1); 
-//    char n[] = "New string";
-//    write_disk(1, n, sizeof(n) - 1);
-//    print_disk ();
-//    char big_n[36];
-//    read_disk(1, 1, big_n);
-//    printf("%s\n", big_n);
-//}
