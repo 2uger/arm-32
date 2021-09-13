@@ -24,6 +24,10 @@ static char nums[] = "0123456789abcdef";
 void
 printint(uint32_t value, uint32_t base)
 {
+    if (value == 0) {
+        pputchar('0');
+        return;
+    }
     char buf[16];
     uint32_t x;
     x = value;
@@ -38,10 +42,6 @@ printint(uint32_t value, uint32_t base)
             pputchar('0');
             pputchar('o');
             break;
-        case (16):
-            pputchar('0');
-            pputchar('x');
-            break;
     }
     while (i-- > 0)
         pputchar(buf[i]);
@@ -50,6 +50,8 @@ printint(uint32_t value, uint32_t base)
 void
 printptr(uint32_t p_addr)
 {
+    pputchar('0');
+    pputchar('x');
     printint(p_addr, 16);
 }
 
@@ -68,18 +70,24 @@ kprintf(char * format, ...)
         }
         c++;
         switch(*c) {
+        // decimal
         case ('d'):
             printint(va_arg(ap, uint32_t), 10);
             break;
+        // hex
         case ('x'):
             printint(va_arg(ap, uint32_t), 16);
             break;
+        // address
         case ('p'):
             // TODO: check if we need to get a pointer uint32_t *
             printptr(va_arg(ap, uint32_t));
             break;
+        // character
         case ('c'):
             pputchar(va_arg(ap, uint32_t));
+            break;
+        // string
         case ('s'):
             str = va_arg(ap, uint32_t);
             while (*str != '\0') {

@@ -16,8 +16,11 @@ SRC = \
     $K/proc.c \
     $K/setup.c \
 	$K/string.c \
+	$K/panic.c \
     $K/uart.c \
     $K/disk_emulate.c \
+    $K/buf.c \
+    $K/fs.c \
     $K/test.c 
 
 OBJS = \
@@ -28,9 +31,12 @@ OBJS = \
     main.o \
     proc.o \
     setup.o \
+    panic.o \
 	string.o \
     uart.o \
     disk_emulate.o \
+    buf.o \
+    fs.o \
     test.o \
 
 kernel: main initcode activate

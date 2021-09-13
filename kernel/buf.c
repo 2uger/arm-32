@@ -14,6 +14,7 @@
 // follow on last recently buffer
 #include <stdint.h>
 
+#include "defs.h"
 #include "param.h"
 #include "buf.h"
 
@@ -72,8 +73,7 @@ bget(uint32_t dev, uint32_t blockn)
             return buf;
         }
     }
-    printf("Cant allocate new free cache buffer\n");
-    
+    panic("Cant allocate new free cache buffer\n");
 }
 
 // Return buffer with actual data
@@ -86,11 +86,11 @@ bread(uint32_t dev, uint32_t blockn)
     buf = bget(dev, blockn);
     if (!buf->valid) {
         // read into buffer from disk
-        printf("Block is not valid\n");
+        kprintf("Block is not valid\n");
         read_disk(blockn, 1, buf->data); 
         buf->valid = 1;
     }
-    printf("%s\n", buf->data);
+    kprintf("%s\n", buf->data);
     return buf;
 }
 

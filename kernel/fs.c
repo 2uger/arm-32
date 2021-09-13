@@ -13,7 +13,7 @@ readspblock(uint32_t dev, struct spblock *spb)
 {
     struct CacheBuffer *b;
     b = bget(dev, 0);
-    mmemmove(spb, b->data, sizeof(*spb))
+    mmemmove(spb, b->data, sizeof(*spb));
     brelease(b);
 }
 
@@ -22,7 +22,7 @@ zeroblock(uint32_t dev, uint32_t blockn)
 {
     struct CacheBuffer *b;
     b = bget(dev, blockn);
-    memset(b, 0, BLOCK_SIZE);
+    mmemset(b, 0, BLOCK_SIZE);
     bwrite(b);
     brelease(b);
 }

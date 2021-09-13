@@ -25,6 +25,7 @@ void activate(uint32_t ustack);
 void main();
 
 //string.c
+void mmemset(void * dst, char value, uint32_t size);
 void mmemmove(void * dst, const void * src, uint32_t size);
 char *sstrcpy(char *, const char *, uint32_t);
 
@@ -40,13 +41,16 @@ void release(struct lock *);
 void binit(void);
 struct CacheBuffer *bget(uint32_t, uint32_t);
 struct CacheBuffer *bread(uint32_t, uint32_t);
-struct CacheBuffer *bwrite(struct CacheBuffer *);
-struct CacheBuffer *brelease(struct CacheBuffer *);
+void bwrite(struct CacheBuffer *);
+void brelease(struct CacheBuffer *);
 
 // disk_emulate.c
 void init_disk(void);
 uint32_t read_disk(uint32_t, uint32_t, void *);
 uint32_t write_disk(uint32_t, void *, uint32_t);
+void print_disk(void);
 
+
+void test(void);
 
 
