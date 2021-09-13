@@ -10,12 +10,23 @@ kernel_vector:
     .word usage_fault
     .word 
     .word 
-    .word 
-    .word 
+    .word svc_call
+    .word svc_call
+    .word svc_call
+    .word svc_call
+    .word svc_call
+    .word svc_call
     .word svc_call
     .word 
     .word 
     .word pend_sv
+    .word systick_handler
+    .word systick_handler
+    .word systick_handler
+    .word systick_handler
+    .word systick_handler
+    .word systick_handler
+    .word systick_handler
     .word systick_handler
 
 .global entry
