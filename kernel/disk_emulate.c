@@ -1,11 +1,9 @@
 // Simple emulator of hard drive
 
-#include <stdio.h>
+#include <stdint.h>
 
-#define BLOCKS_NUM 4
-#define BLOCK_SIZE 16 
+#include "param.h"
 
-typedef int uint32_t;
 
 struct block {
     char data[BLOCK_SIZE];        
@@ -26,11 +24,11 @@ print_disk(void)
     struct block *b;
     for (b = DISK; b < &DISK[BLOCKS_NUM]; b++) {
         for (uint32_t i = 0; i < BLOCK_SIZE; i++) {
-            printf("%c", b->data[i]);
+            kprintf("%c", b->data[i]);
         }
-        printf("\n");
+        kprintf("\n");
     }
-    printf("\n");
+    kprintf("\n");
 }
 
 void 
@@ -76,7 +74,7 @@ write_disk(uint32_t blockn, void *buffer, uint32_t size)
 {
     uint32_t blocks_num = size / BLOCK_SIZE;
     if (blockn + blocks_num >= BLOCKS_NUM) {
-        printf("Out of blocks!\n");
+        kprintf("Out of blocks!\n");
         return -1;
     }
 

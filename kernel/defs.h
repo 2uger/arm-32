@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "buf.h"
+#include "lock.h"
 
 // proc.c
 void scheduler(void);

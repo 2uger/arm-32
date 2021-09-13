@@ -12,7 +12,9 @@
 // *** Start with simple buffer cache, double linked list
 // *** Think about how double linked list should be init so we can
 // follow on last recently buffer
-#include <stdio.h>
+#include <stdint.h>
+
+#include "param.h"
 #include "buf.h"
 
 struct {
@@ -118,30 +120,4 @@ brelease(struct CacheBuffer *buf)
         buf->next = bcache.head;
         bcache.head = buf;
     } 
-}
-
-void
-print_buffer_addrs(void)
-{
-    printf("Head is point to %p\n", bcache.head);
-    printf("Tail is point to %p\n", bcache.tail);
-    for (int i=0; i<BCACHE_NUM; i++) {
-        printf("%p\n", &bcache.buf[i]);
-    }
-    test_buffer();
-}
-
-void
-test_buffer(void)
-{
-    struct CacheBuffer *buf;
-    struct CacheBuffer *buf1;
-    buf = bread(0, 1);
-    buf1 = bread(0, 0);
-    printf("%p\n", buf);
-    printf("%p\n", buf1);
-    printf("%d\n", buf->dev);
-    printf("%s\n", buf->data);
-    brelease(buf1);
-    printf("%p\n", bcache.head);
 }

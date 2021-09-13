@@ -6,7 +6,6 @@ void
 main()
 {
     consoleinit ();  
-    binit ()
     kprintf("Kernel is booting up, just wait and relax!!!\n");
 
     procinit ();

@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include "param.h"
+
 #define INODES_PER_BLOCK (BLOCK_SIZE / sizeof(struct dinode))
 
 // block containing inode
@@ -25,15 +27,15 @@ struct spblock {
 
     uint32_t inodes_start; // block where inodes start
     uint32_t bitmap_start; // block where bitmap start
-}
+};
 
 // disk inode structure
 struct dinode {
     uint8_t type; // identify type of information(file, dir, device). 0 means free.
     uint16_t nlink; // how much dirs link to that file
     uint32_t size; // how much data in file
-    uint32_t addrs[FILE_BLOCKS_NUM]; // addresses of all file's blocks
-}
+    uint32_t addrs[DATA_BLOCKS_NUM]; // addresses of all file's blocks
+};
 
 // memory inode structre
 struct inode {
@@ -46,7 +48,7 @@ struct inode {
     uint16_t type; // identify type of information(file, dir, device). 0 means free.
     uint16_t nlink; // how much dirs link to that file
     uint32_t size; // how much data in file
-    uint32_t addrs[FILE_BLOCKS_NUM]; // addresses of all file's blocks
-}
+    uint32_t addrs[DATA_BLOCKS_NUM]; // addresses of all file's blocks
+};
 
 #endif

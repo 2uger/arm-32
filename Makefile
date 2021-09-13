@@ -16,7 +16,9 @@ SRC = \
     $K/proc.c \
     $K/setup.c \
 	$K/string.c \
-    $K/uart.c 
+    $K/uart.c \
+    $K/disk_emulate.c \
+    $K/test.c 
 
 OBJS = \
     entry.o \
@@ -28,6 +30,8 @@ OBJS = \
     setup.o \
 	string.o \
     uart.o \
+    disk_emulate.o \
+    test.o \
 
 kernel: main initcode activate
 	$(LD) -o kernel.elf -T kernel/link.ld $(OBJS) 

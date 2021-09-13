@@ -1,11 +1,9 @@
 #ifndef BUF_H
 #define BUF_H
 
-#define BCACHE_NUM 4 
-#define BLOCK_SIZE 4 
+#include <stdint.h>
 
-typedef int uint32_t;
-typedef int uint16_t;
+#include "param.h"
 
 struct CacheBuffer {
     uint32_t valid;
