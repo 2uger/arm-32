@@ -39,3 +39,28 @@ entry:
     msr MSP, r0
     ldr r1, =kernel_setup
     bx r1
+
+//copy_data_to_ram:
+//    .extern _kernel_base
+//    ldr r0, =_kernel_base
+//    ldr r1, = 0x20000000
+//    .extern _kernel_end
+//    ldr r2, = _kernel_end
+//copy_loop:
+//    ldr r3, [r0]
+//    str r3, [r1]
+//    add r0, r0, #0x4
+//    add r1, r1, #0x4
+//    cmp r1, r2
+//    blt copy_loop
+
+//zero_bss:
+//    movs r0, #0x00000000
+//    .extern _ebss
+//    ldr r2, =_ebss
+//zero_bss_loop:
+//    str r0, [r1]
+//    add r1, r1, #0x4
+//    cmp r1, r2
+//    blt zero_bss_loop
+//    bx lr

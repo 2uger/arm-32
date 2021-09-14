@@ -75,16 +75,18 @@ void scheduler(void) {
      * ready to execute => switch context
     */
     kprintf("We are in scheduler, congrats!!!\n");
-    activate(2300);
     while (true) {
         for (p = proc; p < &proc[NPROC]; p++) {
             if (p->state == READY) {
                 kprintf("Proc with READY state");
+                break;
                 p->state = RUNNING;
                 cpu.proc = p;
                 // make context switch
                 activate(p->ustack);
             }
         }  
+        break;
+        activate(20309);
     }
 }

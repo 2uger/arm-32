@@ -4,9 +4,11 @@
 
 #include <stdint.h>
 
-#include "defs.h"
 #include "buf.h"
 #include "fs.h"
+#include "defs.h"
+
+struct spblock spb;
 
 void
 readspblock(uint32_t dev, struct spblock *spb)
@@ -34,28 +36,28 @@ zeroblock(uint32_t dev, uint32_t blockn)
 // bfree - actually just freeing bitmap bit
 
 // allocating new block on disk
-//uint32_t
-//balloc(uint32_t dev)
-//{
-//    uint32_t m;
-//    struct buf *b;
-//    for (uint32_t b = 0; b < spb.size; b++) {
-//        // get block of 512 * 8 bits showing status of blocks
-//        b = bread(dev, BMBLOCK(b, sb));
-//        for (uint32_t bm = 0; bm < BPB < sb.size; bm++) {
-//            // actually we iterating through bits in byte(char)
-//            m = 1 << (bm % 8);
-//            if (b->data[bm/8] & m == 0) { // is block is free
-//                b->data[bm/8] |= m; // mark block as not free
-//                bwrite(b);
-//                brelease(b);
-//                return b + bm; // block number that we allocate
-//            }
-//        }
-//        brelease(b);
-//    }
-//    panic("out of disk block");
-//}
+uint32_t
+balloc(uint32_t dev)
+{
+    uint32_t m;
+    struct CacheBuffer *buf;
+    for (uint32_t b = 0; b < spb.size; b++) {
+        // get block of 512 * 8 bits showing status of blocks
+        buf = bread(dev, BMBLOCK(b, spb));
+        for (uint32_t bm = 0; bm < BPB < spb.size; bm++) {
+            // actually we iterating through bits in byte(char)
+            m = 1 << (bm % 8);
+            if (buf->data[bm/8] & m == 0) { // is block is free
+                buf->data[bm/8] |= m; // mark block as not free
+                bwrite(buf);
+                brelease(buf);
+                return b + bm; // block number that we allocate
+            }
+        }
+        brelease(buf);
+    }
+    panic("out of disk block");
+}
 //
 //// freeing disk block
 //static void

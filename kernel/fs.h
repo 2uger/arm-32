@@ -13,7 +13,7 @@
 // bitmap bits per block
 #define BPB (BLOCK_SIZE * 8) // as we measure block size in bytes
 
-// block containing bitmap bit for block
+// block containing bitmap bit for demanding block
 #define BMBLOCK(b, spb) ((b/BPB) + spb.bitmap_start)
 
 

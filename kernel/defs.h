@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "buf.h"
+#include "fs.h"
 #include "lock.h"
 
 // proc.c
@@ -49,6 +50,12 @@ void init_disk(void);
 uint32_t read_disk(uint32_t, uint32_t, void *);
 uint32_t write_disk(uint32_t, void *, uint32_t);
 void print_disk(void);
+
+// fs.c
+void readspblock(uint32_t, struct spblock *);
+
+uint32_t balloc(uint32_t);
+
 
 
 void test(void);

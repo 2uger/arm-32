@@ -25,7 +25,7 @@ print_disk(void)
     struct block *b;
     for (b = DISK; b < &DISK[BLOCKS_NUM]; b++) {
         for (uint32_t i = 0; i < BLOCK_SIZE; i++) {
-            kprintf("%d", b->data[i]);
+            kprintf("%c", b->data[i]);
         }
         kprintf("\n");
     }

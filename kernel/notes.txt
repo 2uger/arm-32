@@ -38,3 +38,9 @@ File System:
 
   On different levels you work with different abstractions, think about inodes as something
   as you using in your code and dont give a damn about how they gonna read blocks from disk
+
+
+QEMU and emulator:
+*   A lot of things doesnt work because i load it all into flash and wanna rewrite data.
+    What you need to do is to load data(bss, rodata) into RAM.
+

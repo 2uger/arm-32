@@ -24,4 +24,7 @@ test(void)
     test_printf();
     init_disk();
     print_disk();
+    char m[] = "Hello world and meee";
+    write_disk(0, m, sizeof(m));
+    print_disk();
 }
