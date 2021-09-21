@@ -8,8 +8,6 @@ kernel_vector:
     .word memory_manag_fault
     .word bus_fault
     .word usage_fault
-    .word 
-    .word 
     .word svc_call
     .word svc_call
     .word svc_call
@@ -17,8 +15,6 @@ kernel_vector:
     .word svc_call
     .word svc_call
     .word svc_call
-    .word 
-    .word 
     .word pend_sv
     .word systick_handler
     .word systick_handler
@@ -32,6 +28,7 @@ kernel_vector:
 .global entry
 entry:
     // Disable interrupts beside NMI and HardFault
+
     mov r0, #0
     msr PRIMASK, r0
     // Setup kernel stack
@@ -40,6 +37,10 @@ entry:
     ldr r1, =kernel_setup
     bx r1
 
+ttest:
+    mrs r0, PSP
+    mrs r0, MSP
+    mrs r0, CONTROL
 //copy_data_to_ram:
 //    .extern _kernel_base
 //    ldr r0, =_kernel_base

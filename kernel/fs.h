@@ -10,7 +10,7 @@
 // block containing inode
 #define IBLOCK(i, sb) ((i/INODES_PER_BLOCK) + sb.inodes_start)
 
-// bitmap bits per block
+// bit per block
 #define BPB (BLOCK_SIZE * 8) // as we measure block size in bytes
 
 // block containing bitmap bit for demanding block

@@ -30,7 +30,7 @@ void timerinit(void) {
 
 void kernel_setup(void) {
     vtableinit();
-    //timerinit();
+    timerinit();
     test();
     main();
 }

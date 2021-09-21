@@ -37,6 +37,7 @@ void
 svc_call(void)
 {
     kprintf("We actually in svc call handler\n");
+    extern ttest();
     while(1){};
 }
 

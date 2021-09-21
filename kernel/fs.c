@@ -41,16 +41,19 @@ balloc(uint32_t dev)
 {
     uint32_t m;
     struct CacheBuffer *buf;
-    for (uint32_t b = 0; b < spb.size; b++) {
-        // get block of 512 * 8 bits showing status of blocks
+    for (uint32_t b = 0; b < spb.size; b+=BPB) {
+        // if block's size 8 => we get 64 bits as bitmap
+        // get block of 8 * 8 bits showing status of blocks
         buf = bread(dev, BMBLOCK(b, spb));
-        for (uint32_t bm = 0; bm < BPB < spb.size; bm++) {
+        // iterating through byte till BPB or untill blocks amout on disk
+        for (uint32_t bm = 0; bm < BPB && bm + b < spb.size; bm++) {
             // actually we iterating through bits in byte(char)
             m = 1 << (bm % 8);
-            if (buf->data[bm/8] & m == 0) { // is block is free
+            if (buf->data[bm/8] & m == 0) { // is block free
                 buf->data[bm/8] |= m; // mark block as not free
                 bwrite(buf);
                 brelease(buf);
+                zeroblock(dev, b + bm);
                 return b + bm; // block number that we allocate
             }
         }
