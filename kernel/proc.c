@@ -13,14 +13,20 @@ struct proc proc[NPROC];
 
 uint32_t nextpid = 1;
 
+struct proc*
+myproc(void)
+{
+    return cpu.proc;
+}
+
 static uint32_t allocpid() {
-    int newpid = nextpid;
-    nextpid += 1;
-    return newpid;
+    return nextpid++;
 }
 
 // return 0 if cant find place for new process
-static struct proc * allocproc(void) {
+static struct proc*
+allocproc(void)
+{
     struct proc * newproc;
     
     for (newproc = proc; newproc < &proc[NPROC]; newproc++) {
@@ -35,46 +41,54 @@ static struct proc * allocproc(void) {
 }
 
 // preparing proc table while booting
-void procinit(void) {
-    struct proc *p;
+void
+procinit(void)
+{
+    struct proc* p;
     
     int i = 1;
     for (p = proc; p < &proc[NPROC]; p++) {
         p->ustack = USPACE_BASE + PROC_SIZE * i;
-        kprintf("Process %d is locating at %p\n", i, p->ustack);
+        kprintf("Process stack %d is locating at %p\n", i, p->ustack);
         p->state = UNUSED;
+        p->memsize = USPACE_BASE + PROC_SIZE * i;
         i++;
     }
 }
 
 // Code that first user process will execute
-uint32_t initcode[] = { 
-   0xDF, 0x02 
+char initcode[] = { 
+    0x01, 0x26, 0x09, 0xDF
 };
 
-void userinit(void) {
+void
+userinit(void)
+{
     // init first user process, basically beside of allocate
     // place in processes array we copy simple code and just 
     // jump to it
-    kprintf("We are in userinit, trying to run first user process!!!!\n");
+    kprintf("Load first user process\n");
     
-    struct proc * newproc;
+    struct proc* newproc;
     newproc = allocproc();
 
     // copy start code to user process
-    mmemmove((uint32_t *)USPACE_BASE, initcode, sizeof(initcode));
+    mmemmove((uint32_t*)USPACE_BASE, initcode, sizeof(initcode));
+    proc->trapframe.pc = USPACE_BASE;
 
     newproc->state = READY;
     kprintf("Pid of first user process is %d\n", newproc->pid);
 }
 
-void scheduler(void) {
-    struct proc * p;
+void
+scheduler(void)
+{
+    struct proc* p;
  
     /* Iterate through all proccess to check which one is
      * ready to execute => switch context
     */
-    kprintf("We are in scheduler, congrats!!!\n");
+    kprintf("Scheduler start it's work\n");
     while (true) {
         for (p = proc; p < &proc[NPROC]; p++) {
             if (p->state == READY) {
@@ -82,10 +96,23 @@ void scheduler(void) {
                 p->state = RUNNING;
                 cpu.proc = p;
                 // make context switch
-                activate(p->ustack);
+                activate(p->ustack, &p->trapframe);
             }
         }  
-        break;
-        activate(20309);
     }
+}
+
+// System call to execute user programm
+// Need to read path to programm, load it into
+// memory and just start executing
+void
+exec(char* path, char** argv)
+{
+}
+
+// System call for make a copy of current process
+// and make him as child
+void
+fork(void)
+{
 }

@@ -5,16 +5,16 @@ kernel_vector:
     .word entry       // entry point
     .word nmi_handler
     .word hardfault_handler
-    .word memory_manag_fault
-    .word bus_fault
-    .word usage_fault
-    .word svc_call
-    .word svc_call
-    .word svc_call
-    .word svc_call
-    .word svc_call
-    .word svc_call
-    .word svc_call
+    .word memory_manag_fault_handler
+    .word bus_fault_handler
+    .word usage_fault_handler
+    .word svc_handler
+    .word svc_handler
+    .word svc_handler
+    .word svc_handler
+    .word svc_handler
+    .word svc_handler
+    .word svc_handler
     .word pend_sv
     .word systick_handler
     .word systick_handler

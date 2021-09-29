@@ -1,44 +1,52 @@
 // Definition of all interrupt handlers in vector table
 #include "defs.h"
+#include "proc.h"
 
 void
 nmi_handler(void)
 {
-    kprintf("We are in nmi handler\n");
+    kprintf("NMI handler\n");
     while(1){};
 }
 
 void
 hardfault_handler(void)
 {
-    kprintf("We are in hardfault handler\n");
+    kprintf("Hardfault handler\n");
     while(1){};
 }
 
 void
-memory_manag_fault(void)
+memory_manag_fault_handler(void)
 {
     while(1){};
 }
 
 void
-bus_fault(void)
+bus_fault_handler(void)
 {
     while(1){};
 }
 
 void
-usage_fault(void)
+usage_fault_handler(void)
 {
     while(1){};
 }
 
+// user make svc call to make system call
+// get call number from r6
 void
-svc_call(void)
+svc_handler(void)
 {
-    kprintf("We actually in svc call handler\n");
-    extern ttest();
-    while(1){};
+    kprintf("SVC handler\n");
+
+    struct proc* p = myproc();
+    save_uregs(&p->trapframe);
+    //kprintf("Regs of user is %d, %d\n", p->trapframe.r1, p->trapframe.r6);
+    kprintf("Save user regs %x, %x, %x\n", p->trapframe.r2, p->trapframe.r6, p->trapframe.pc);
+    while(1) {};
+    sys_call(p->trapframe.r6);
 }
 
 void
@@ -49,7 +57,7 @@ pend_sv(void)
 void
 systick_handler(void)
 {
-    //__asm("mrs r0, psp");
+    //__asm("mrs r0, CONTROL");
     //__asm("stmdb r0!, {r4, r5, r6, r7, r8, r9, r10, r11, lr}");
     //__asm("pop {r4, r5, r6, r7, r8, r9, r10, r11, r12, lr}");
     //__asm("msr PSR, r12");

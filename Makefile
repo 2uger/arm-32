@@ -1,5 +1,5 @@
 TOOLCHAIN = arm-none-eabi-
-COMMON_FLAGS = -Ikernel/ -O2 -nostdlib -nostartfiles -ffreestanding -Wall -mthumb -mcpu=cortex-m3 -c
+COMMON_FLAGS = -Ikernel/ -O0 -nostdlib -nostartfiles -ffreestanding -Wall -mthumb -mcpu=cortex-m3 -c 
 
 CC = $(TOOLCHAIN)gcc
 AS = $(TOOLCHAIN)as
@@ -21,6 +21,7 @@ SRC = \
     $K/disk_emulate.c \
     $K/buf.c \
     $K/fs.c \
+    $K/sys_call.c \
     $K/test.c 
 
 OBJS = \
@@ -37,6 +38,7 @@ OBJS = \
     disk_emulate.o \
     buf.o \
     fs.o \
+    sys_call.o \
     test.o \
 
 kernel: main initcode activate

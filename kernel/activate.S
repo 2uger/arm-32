@@ -2,36 +2,37 @@
 .global activate
 activate:
     // save kernel state
-
+    mov r3, r0
     mrs ip, PSR
-    push {r2, r3}
+    push {r2, r3, r4, r5, r6, r7, lr}
 
+    // change user space stack address
     msr PSP, r0
-    //mrs r0, PSP
+    // change to user-thread mode
     mov r0, #3
     msr control, r0
     isb
-    pop {r3}
-    bx lr
-    
-    // first argument of calling activate is actually
-    // address of user space stack
-    //mov r1, #2
-    //// change process state(thread-unprivilged)
-    //msr CONTROL, r1
-
-    //ldr r0, =0x21000000
-    //msr PSP, r0
-    //mrs r5, PSP
-    //
-    //mov r1, #1
-    //msr CONTROL, r3
-
-    //mrs r0, MSP
-    //mrs r0, PSP
-    //// instruction synchronization barrier
     //svc #3
-    //// load user context
-    ////pop {r4, r5, r6, r7, r8, r9, r10, r11, lr}
-    //bx lr
 
+    ldm r1!, {r2, r3, r4, r5, r6, r7}
+    ldr r0, [r1]
+    mov pc, r0
+
+    nop
+
+//.section .user
+.global user_start
+user_start:
+    mov r6, #0x1 
+    svc #9
+    
+
+// function to save user process registers into 
+// kernel structure
+.global save_uregs
+save_uregs:
+    // r0 - start of struct
+    stmia	r0!, {r2, r3, r4, r5, r6, r7}
+    //mov pc, r1
+    //str r1, [r0]
+    bx lr

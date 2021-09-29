@@ -4,11 +4,15 @@
 #include "buf.h"
 #include "fs.h"
 #include "lock.h"
+#include "proc.h"
 
 // proc.c
+struct proc* myproc(void);
 void scheduler(void);
 void userinit(void);
 void procinit(void);
+void exec(char* path, char** argv);
+void fork(void);
 
 // console.c
 void consoleinit(void);
@@ -20,7 +24,8 @@ void uart_init(void);
 void uart_sendchar(char);
 
 // activate.S
-void activate(uint32_t ustack);
+void activate(uint32_t, struct trapframe*);
+void save_uregs(struct trapframe*);
 
 // main.c
 void main();
@@ -53,8 +58,10 @@ void print_disk(void);
 
 // fs.c
 void readspblock(uint32_t, struct spblock *);
-
 uint32_t balloc(uint32_t);
+
+// sys_call.c
+void sys_call(uint32_t);
 
 
 

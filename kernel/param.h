@@ -1,4 +1,4 @@
-#define NPROC 2 
+#define NPROC 3 
 #define PROC_SIZE 0x00001000
 
 // file system level
