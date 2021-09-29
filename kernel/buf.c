@@ -20,11 +20,6 @@
 
 struct {
     struct CacheBuffer buf[BCACHE_NUM];
-
-    // Most recent used
-    struct CacheBuffer *head;
-    // Least recent used
-    struct CacheBuffer *tail;
 } bcache;
 
 // Init cache buffer
@@ -33,38 +28,34 @@ void
 binit(void)
 {
     struct CacheBuffer *b;
-    bcache.head = bcache.buf;
-    bcache.tail = bcache.buf;
 
-    for (b = bcache.buf+1; b < bcache.buf+BCACHE_NUM; b++) {
-        b->prev = bcache.tail;
-        b->prev->next = b;
-        bcache.tail = b;
+    for (b = bcache.buf; b < bcache.buf+BCACHE_NUM; b++) {
+        b->dev = 0;
+        b->blockn = 0;
+        b->next = b+1;
     }
-    bcache.tail->next = bcache.head;
-    bcache.head->prev = bcache.tail;
 }
 
 // Scan through array and find 
-struct CacheBuffer * 
+struct CacheBuffer* 
 bget(uint32_t dev, uint32_t blockn)
 {
     //Scan buffer array, if find return, else allocate a new one
     struct CacheBuffer *buf;
-    buf = bcache.head;
+    buf = bcache.buf;
     
-    while (buf <= bcache.tail) {
+    while (buf <= &bcache.buf[BCACHE_NUM]) {
         // find block with same dev and block num
         if (buf->dev == dev && buf->blockn == blockn) {
             buf->refcnt++;
             return buf;
         }
-        buf++;
+        buf = buf->next;
     }
     
     // dont find demanding block, allocate a new one
-    buf = bcache.head;
-    while (buf <= bcache.tail) {
+    buf = bcache.buf;
+    while (buf <= &bcache.buf[BCACHE_NUM]) {
         if (buf->refcnt == 0) {
             buf->dev = dev;
             buf->blockn = blockn;
@@ -77,11 +68,11 @@ bget(uint32_t dev, uint32_t blockn)
 }
 
 // Return buffer with actual data
-struct CacheBuffer * 
+struct CacheBuffer* 
 bread(uint32_t dev, uint32_t blockn)
 {
     // Call bget, if it's new, call read routine from sd card
-    struct CacheBuffer *buf;
+    struct CacheBuffer* buf;
     
     buf = bget(dev, blockn);
     if (!buf->valid) {
@@ -90,7 +81,6 @@ bread(uint32_t dev, uint32_t blockn)
         read_disk(blockn, 1, buf->data); 
         buf->valid = 1;
     }
-    kprintf("%s\n", buf->data);
     return buf;
 }
 
@@ -105,19 +95,4 @@ void
 brelease(struct CacheBuffer *buf)
 {
     buf->refcnt--;
-    // check if buffer is not needed anymore
-    // buffer is most recently used, move it to the head of list
-    if (buf->refcnt == 0 && bcache.head != buf) {
-        if (bcache.tail == buf)
-            bcache.tail = bcache.tail->prev;
-        // remove buffer
-        buf->prev->next = buf->next;
-        buf->next->prev = buf->prev; 
-        
-        // change head pointer
-        bcache.head->prev->next = buf;
-        bcache.head->prev = buf;
-        buf->next = bcache.head;
-        bcache.head = buf;
-    } 
 }

@@ -6,6 +6,7 @@ void
 main()
 {
     consoleinit ();  
+    binit(); // initialize memory-disk cache buffers
     kprintf("Kernel is booting up, just wait and relax!!!\n");
 
     procinit ();

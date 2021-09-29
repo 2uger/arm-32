@@ -39,14 +39,15 @@ zeroblock(uint32_t dev, uint32_t blockn)
 uint32_t
 balloc(uint32_t dev)
 {
-    uint32_t m;
+    uint32_t m, b, bm;
     struct CacheBuffer *buf;
-    for (uint32_t b = 0; b < spb.size; b+=BPB) {
+
+    for (b = 0; b < spb.size; b+=BPB) {
         // if block's size 8 => we get 64 bits as bitmap
         // get block of 8 * 8 bits showing status of blocks
         buf = bread(dev, BMBLOCK(b, spb));
         // iterating through byte till BPB or untill blocks amout on disk
-        for (uint32_t bm = 0; bm < BPB && bm + b < spb.size; bm++) {
+        for (bm = 0; bm < BPB && bm + b < spb.size; bm++) {
             // actually we iterating through bits in byte(char)
             m = 1 << (bm % 8);
             if (buf->data[bm/8] & m == 0) { // is block free
@@ -61,25 +62,27 @@ balloc(uint32_t dev)
     }
     panic("out of disk block");
 }
-//
-//// freeing disk block
-//static void
-//bfree(uint32_t dev, uint32_t block_num) {
-//    // find bitmap bit for current block
-//    // make it 0
-//    struct buf *b;
-//    b = bread(dev, (BMBLOCK(b, sb)));
-//    uint32_t bm = block_num % BPB;
-//    uint32_t m = 1 << (bm % 8);
-//    if (b->data[bm/8] & m == 0) // already free
-//        panic("freeing free block");
-//    // 000-1-000 -> 000-0-000
-//    b->data[bm/8] &= ~m;
-//    bwrite(b);
-//    brelease(b);
-//}
-//
-//// Inodes code
+
+// freeing disk block
+static void
+bfree(uint32_t dev, uint32_t block_num) {
+    // find bitmap bit for current block
+    // make it 0
+    struct CacheBuffer *b;
+    b = bread(dev, (BMBLOCK(block_num, spb)));
+
+    uint32_t bm = block_num % BPB;
+    uint32_t m = 1 << (bm % 8);
+    if (b->data[bm/8] & m == 0) // already free
+        panic("freeing free block");
+
+    // 000-1-000 -> 000-0-000
+    b->data[bm/8] &= ~m;
+    bwrite(b);
+    brelease(b);
+}
+
+// Inodes code
 //
 //// In memory inodes
 //struct {

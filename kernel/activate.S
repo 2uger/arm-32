@@ -18,7 +18,7 @@ activate:
     ldr r0, [r1]
     mov pc, r0
 
-    nop
+   nop
 
 //.section .user
 .global user_start

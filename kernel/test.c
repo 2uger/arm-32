@@ -19,6 +19,16 @@ test_printf(void)
 }
 
 void
+test_block(void)
+{
+    kprintf("Test of file system\n");
+    struct CacheBuffer* sb;
+    sb = bread(0, 0);
+    kprintf("%s\n", sb->data);
+
+}
+
+void
 test(void)
 {
     test_printf();
@@ -27,4 +37,5 @@ test(void)
     char m[] = "Hello world and meee";
     write_disk(0, m, sizeof(m));
     print_disk();
+    test_block();
 }

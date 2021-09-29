@@ -14,7 +14,7 @@
 
 
 /* 100000000Mhz * 1ms = 1000000 - 1 */
-#define RELOAD_VALUE  99999
+#define RELOAD_VALUE  9999999
 
 void vtableinit(void) {
     // As kernel contain vector table at first

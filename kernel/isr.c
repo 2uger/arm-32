@@ -43,7 +43,6 @@ svc_handler(void)
 
     struct proc* p = myproc();
     save_uregs(&p->trapframe);
-    //kprintf("Regs of user is %d, %d\n", p->trapframe.r1, p->trapframe.r6);
     kprintf("Save user regs %x, %x, %x\n", p->trapframe.r2, p->trapframe.r6, p->trapframe.pc);
     while(1) {};
     sys_call(p->trapframe.r6);
