@@ -41,11 +41,11 @@ struct dinode {
 struct inode {
     uint32_t dev; // device number
     uint32_t inum; // i node number
-    uint32_t ref_count; // count all reference from C code(pointers), remove when 0
+    uint32_t ref; // count all reference from C code(pointers), remove when 0
     uint8_t valid; // usage: when find free place in inode table, but dont read from disk
 
     // same structure as in disk i node
-    uint16_t type; // identify type of information(file, dir, device). 0 means free.
+    uint8_t type; // identify type of information(file, dir, device). 0 means free.
     uint16_t nlink; // how much dirs link to that file
     uint32_t size; // how much data in file
     uint32_t addrs[DATA_BLOCKS_NUM]; // addresses of all file's blocks
