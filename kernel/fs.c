@@ -33,7 +33,7 @@ zeroblock(uint32_t dev, uint32_t blockn)
 // Functions to work with blocks on disk
 // balloc - allocating block on disk
 //          setup right bitmap bit
-// bfree - actually just freeing bitmap bit
+// bfree - clean disk data block by setting bitmap bit into zero
 
 // allocating new block on disk
 uint32_t
@@ -191,18 +191,37 @@ ilock(struct inode* in)
 }
 
 
-//// unlcok inode
-//void
-//iunlock(struct inode *inode)
-//{
-//}
-//
-//
-//// drop memory reference
-//// if no more nlinks to inode => clean it up
-//void
-//iput(struct inode *ip)
-//{
-//
-//}
-//
+// unlcok inode
+void
+iunlock(struct inode* inode)
+{
+}
+
+// truncate inode on disk
+void
+itrunc(struct inode* ip)
+{
+    for (uint32_t i = 0; i < DATA_BLOCKS_NUM; i++) {
+        if (ip->addrs[i]) {
+            bfree(ip->dev, i);
+            ip->addrs[i] = 0;
+        }
+    }
+}
+
+// drop reference on inode in memory
+// if that was last memory reference, recycle inode vacation in memory
+// if no more dir links to inode on disk, free inode in memory and on disk
+void
+iput(struct inode* ip)
+{
+    if (ip->ref == 1 && ip->valid && ip->nlink == 0) {
+        itrunc(ip);
+        ip->type = 0;
+        iupdate(ip);
+        ip->valid = 0;
+    }
+    ip->ref--;
+}
+
+

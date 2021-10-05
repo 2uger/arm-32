@@ -59,9 +59,20 @@ void print_disk(void);
 // fs.c
 void readspblock(uint32_t, struct spblock *);
 uint32_t balloc(uint32_t);
+// inodes
+void iinit(void);
+struct inode* ialloc(uint32_t, uint8_t);
+void iupdate(struct inode*);
+void ilock(struct inode*);
+void iunlock(struct inode*);
+void itrunc(struct inode*);
+void iput(struct inode*);
+
+
 
 // sys_call.c
 void sys_call(uint32_t);
+
 
 
 
