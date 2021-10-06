@@ -8,6 +8,8 @@
 #include "fs.h"
 #include "defs.h"
 
+#define min(a, b) (a < b ? a : b)
+
 struct spblock spb;
 
 void
@@ -44,7 +46,7 @@ balloc(uint32_t dev)
 
     for (b = 0; b < spb.size; b+=BPB) {
         // if block's size 8 => we get 64 bits as bitmap
-        // get block of 8 * 8 bits showing status of blocks
+        // get block of 8  *8 bits showing status of blocks
         buf = bread(dev, BMBLOCK(b, spb));
         // iterating through byte till BPB or untill blocks amout on disk
         for (bm = 0; bm < BPB && bm + b < spb.size; bm++) {
@@ -88,7 +90,7 @@ bfree(uint32_t dev, uint32_t block_num) {
 
 // ialloc(int dev, int num) -- allocate fresh inode in disk
 // iget(int dev, int num) -- return in memory copy of demanding inode
-// ilock(struct inode* inode) -- locking in memory inode, so you can modify it
+// ilock(struct inode *inode) -- locking in memory inode, so you can modify it
 //                               read from memory if necessary
 
 // In memory inodes
@@ -97,12 +99,12 @@ struct {
     struct inode inode[INODES_PER_BLOCK];
 } itable;
 
-static struct inode* iget(uint32_t, uint32_t);
+static struct inode *iget(uint32_t, uint32_t);
 
 void
 iinit(void)
 {
-    struct inode* in;
+    struct inode *in;
     for (in = &itable.inode[0]; in < &itable.inode[INODES_PER_BLOCK]; in++) {
     }
 }
@@ -132,10 +134,10 @@ ialloc(uint32_t dev, uint8_t type)
 
 // copying in memory inode to disk
 void
-iupdate(struct inode* in)
+iupdate(struct inode *in)
 {
-    struct CacheBuffer* b;
-    struct dinode* dn;
+    struct CacheBuffer *b;
+    struct dinode *dn;
 
     b = bget(in->dev, in->inum);
     dn = (struct dinode*)b->data + in->inum % INODES_PER_BLOCK;
@@ -155,7 +157,7 @@ iupdate(struct inode* in)
 static struct inode*
 iget(uint32_t dev, uint32_t inum)
 {
-    struct inode* in;
+    struct inode *in;
 
     for (in = &itable.inode[0]; in < &itable.inode[INODES_PER_BLOCK]; in++) {
         if (in->dev == dev && in->inum == inum) {
@@ -167,10 +169,10 @@ iget(uint32_t dev, uint32_t inum)
 //
 // lock inode, read from disk if necessary
 void
-ilock(struct inode* in)
+ilock(struct inode *in)
 {
-    struct CacheBuffer* buf;
-    struct dinode* dn;
+    struct CacheBuffer *buf;
+    struct dinode *dn;
 
     if (in == 0 || in->ref == 0)
         panic("ilock: bad inode");
@@ -193,13 +195,13 @@ ilock(struct inode* in)
 
 // unlcok inode
 void
-iunlock(struct inode* inode)
+iunlock(struct inode *inode)
 {
 }
 
 // truncate inode on disk
 void
-itrunc(struct inode* ip)
+itrunc(struct inode *ip)
 {
     for (uint32_t i = 0; i < DATA_BLOCKS_NUM; i++) {
         if (ip->addrs[i]) {
@@ -213,7 +215,7 @@ itrunc(struct inode* ip)
 // if that was last memory reference, recycle inode vacation in memory
 // if no more dir links to inode on disk, free inode in memory and on disk
 void
-iput(struct inode* ip)
+iput(struct inode *ip)
 {
     if (ip->ref == 1 && ip->valid && ip->nlink == 0) {
         itrunc(ip);
@@ -224,4 +226,62 @@ iput(struct inode* ip)
     ip->ref--;
 }
 
+
+// inode content
+// return address of bn in current inode
+uint32_t
+bmap(struct inode *in, uint32_t bn)
+{
+    uint32_t addr;
+    if (in->addrs[bn] == 0)
+        addrs[bn] = addr = balloc(ip->dev);
+    return addr;
+
+}
+
+// read information from inode 
+// off - offset
+// n   - size of information to copy 
+uint32_t
+readi(struct inode *in, uint32_t dst_addr, uint32_t off, uint32_t n)
+{
+    // how many bytes read
+    uint32_t tot;
+    // offset in current block
+    uint32_t m;
+    struct CacheBuffer *buf;
+
+    if (off > in->size || off + n > n)
+        return 0;
+    if (off + n > in->size)
+        n = in->size - off;
+
+    for (tot = 0; tot < n; off += m, dst_addr += m) {
+        buf = bread(ip->dev, bmap(off / BLOCK_SIZE));
+
+        // copy data to dst addrs
+        m = min(n - tot, BLOCK_SIZE - off % BLOCK_SIZE);
+        mmemmove(dst_addr, m->data, m);
+    }
+}
+
+
+uint32_t
+writei(struct inode *in, uint32_t src_addr, uint32_t off, uint32_t n)
+{
+    uint32_t tot;
+    uint32_t m;
+    struct CacheBuffer *buf;
+
+    if (off > in->size; n < 0)
+        return -1;
+    if (off + n > DATA_BLOCKS_NUM  * BLOCK_SIZE)
+        return -1;
+
+    for (tot = 0; tot < n; tot += m, off += m, src_addr += m) {
+        buf = bread(in->dev, bmap(off / BLOCK_SIZE));
+        m = min(n - tot, BLOCK_SIZE - off % BLOCK_SIZE);
+        mmemmove(buf->data, src_addr, m);
+    }
+}
 
