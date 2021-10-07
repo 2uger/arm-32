@@ -12,12 +12,31 @@
 
 struct spblock spb;
 
+// fun function to init fs by write superblock
+void
+init_fs(uint32_t dev)
+{
+    struct CacheBuffer *buf;
+    int m = 9999; 
+    buf = bread(dev, 0);
+    mmemmove(buf->data, &m, 4);
+    spb.magic = 9999;
+    spb.size = BLOCKS_NUM * 8;
+    spb.data_blocks_num = DATA_BLOCKS_NUM;
+    spb.inodes_num = INODES_NUM;
+    spb.inodes_start = 4;
+    spb.bitmap_start = 7;
+
+    bwrite(buf);
+}
+
 void
 readspblock(uint32_t dev, struct spblock *spb)
 {
     struct CacheBuffer *b;
     b = bget(dev, 0);
-    mmemmove(spb, b->data, sizeof(*spb));
+    kprintf("Read from first block %s\n", b->data);
+    mmemmove(spb, b->data, sizeof(struct spblock));
     brelease(b);
 }
 
@@ -46,13 +65,14 @@ balloc(uint32_t dev)
 
     for (b = 0; b < spb.size; b+=BPB) {
         // if block's size 8 => we get 64 bits as bitmap
-        // get block of 8  *8 bits showing status of blocks
+        // get block of 8*8 bits showing status of blocks
         buf = bread(dev, BMBLOCK(b, spb));
+        kprintf("Read %d\n", BMBLOCK(b, spb));
         // iterating through byte till BPB or untill blocks amout on disk
-        for (bm = 0; bm < BPB && bm + b < spb.size; bm++) {
+        for (bm = 0; bm < BPB || bm + b < spb.size; bm++) {
             // actually we iterating through bits in byte(char)
             m = 1 << (bm % 8);
-            if (buf->data[bm/8] & (m == 0)) { // is block free
+            if ((buf->data[bm/8] & m) == 0) { // is block free
                 buf->data[bm/8] |= m; // mark block as not free
                 bwrite(buf);
                 brelease(buf);
@@ -234,7 +254,7 @@ bmap(struct inode *in, uint32_t bn)
 {
     uint32_t addr;
     if (in->addrs[bn] == 0)
-        addrs[bn] = addr = balloc(ip->dev);
+        in->addrs[bn] = addr = balloc(in->dev);
     return addr;
 
 }
@@ -257,11 +277,11 @@ readi(struct inode *in, uint32_t dst_addr, uint32_t off, uint32_t n)
         n = in->size - off;
 
     for (tot = 0; tot < n; off += m, dst_addr += m) {
-        buf = bread(ip->dev, bmap(off / BLOCK_SIZE));
+        buf = bread(in->dev, bmap(in, off / BLOCK_SIZE));
 
         // copy data to dst addrs
         m = min(n - tot, BLOCK_SIZE - off % BLOCK_SIZE);
-        mmemmove(dst_addr, m->data, m);
+        mmemmove(dst_addr, buf->data, m);
     }
 }
 
@@ -273,13 +293,13 @@ writei(struct inode *in, uint32_t src_addr, uint32_t off, uint32_t n)
     uint32_t m;
     struct CacheBuffer *buf;
 
-    if (off > in->size; n < 0)
+    if (off > in->size || n < 0)
         return -1;
     if (off + n > DATA_BLOCKS_NUM  * BLOCK_SIZE)
         return -1;
 
     for (tot = 0; tot < n; tot += m, off += m, src_addr += m) {
-        buf = bread(in->dev, bmap(off / BLOCK_SIZE));
+        buf = bread(in->dev, bmap(in, off / BLOCK_SIZE));
         m = min(n - tot, BLOCK_SIZE - off % BLOCK_SIZE);
         mmemmove(buf->data, src_addr, m);
     }

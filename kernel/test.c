@@ -31,11 +31,21 @@ test_block(void)
 void
 test(void)
 {
-    test_printf();
     init_disk();
     print_disk();
+    kprintf("\n");
     char m[] = "Hello world and meee";
     write_disk(0, m, sizeof(m));
+    print_disk();
+    kprintf("\n");
+    init_fs(0);
+    extern struct spblock spb;
+    kprintf("Magic num is %d\n", spb.magic);
+    print_disk();
+    balloc(0);
+    balloc(0);
+    balloc(0);
+    kprintf("\n");
     print_disk();
     test_block();
 }

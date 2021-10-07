@@ -1,7 +1,6 @@
 MEMORY {
     ROM (rx) : ORIGIN = 0x00000000, LENGTH = 16k
-    KRAM (rwx) : ORIGIN = _kernel_base, LENGTH = 8k
-    URAM (rwx) : ORIGIN = _ram_base, LENGTH = 8k
+    KRAM (rwx) : ORIGIN = _kernel_base, LENGTH = 12k
 }
 
 SECTIONS
@@ -14,11 +13,6 @@ SECTIONS
     } > ROM
 
     
-    /* Load first user app here */
-    .user : {
-        *(.user*)
-    } > URAM
-
     _text_base = .;
     .text : {
         *(.text*)

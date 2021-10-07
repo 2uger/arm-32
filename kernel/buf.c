@@ -29,10 +29,13 @@ binit(void)
 {
     struct CacheBuffer *b;
 
-    for (b = bcache.buf; b < bcache.buf+BCACHE_NUM; b++) {
+    for (b = bcache.buf; b < &bcache.buf[BCACHE_NUM]; b++) {
+        b->valid = 0;
+        b->dirty = 0;
+
         b->dev = 0;
         b->blockn = 0;
-        b->next = b+1;
+        b->refcnt = 0;
     }
 }
 
@@ -44,27 +47,30 @@ bget(uint32_t dev, uint32_t blockn)
     struct CacheBuffer *buf;
     buf = bcache.buf;
     
-    while (buf <= &bcache.buf[BCACHE_NUM]) {
+    while (buf < &bcache.buf[BCACHE_NUM]) {
         // find block with same dev and block num
         if (buf->dev == dev && buf->blockn == blockn) {
             buf->refcnt++;
+            kprintf("Find demanding block in cache\n");
             return buf;
         }
-        buf = buf->next;
+        buf++;
     }
     
     // dont find demanding block, allocate a new one
     buf = bcache.buf;
     while (buf <= &bcache.buf[BCACHE_NUM]) {
         if (buf->refcnt == 0) {
+            kprintf("Allocate new block in cache\n");
             buf->dev = dev;
             buf->blockn = blockn;
             buf->valid = 0;
             buf->refcnt = 1;
             return buf;
         }
+        buf++;
     }
-    panic("Cant allocate new free cache buffer\n");
+    panic("Cant allocate new free cache buffer");
 }
 
 // Return buffer with actual data

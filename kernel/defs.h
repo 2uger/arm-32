@@ -57,6 +57,7 @@ uint32_t write_disk(uint32_t, void *, uint32_t);
 void print_disk(void);
 
 // fs.c
+void init_fs(uint32_t);
 void readspblock(uint32_t, struct spblock *);
 uint32_t balloc(uint32_t);
 // inodes

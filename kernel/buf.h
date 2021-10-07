@@ -15,8 +15,6 @@ struct CacheBuffer {
     uint16_t refcnt; // users amount
 
     char data[BLOCK_SIZE]; // actual data
-    
-    struct CacheBuffer *next;
 };
 
 #endif
