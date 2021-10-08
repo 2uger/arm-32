@@ -53,3 +53,19 @@ sstrcpy(char *s, const char *dst, uint32_t size)
     }
     return os;
 }
+
+uint32_t
+sstrcmp(const char *l, const char *r, uint32_t n)
+{
+    while (!n || *l || *l == *r) {
+        n--;
+        l++;
+        r++;
+    }
+    if (n == 0)
+        // both n bytes of strings equal
+        return 0;
+    return *l - *r;
+    
+
+}
