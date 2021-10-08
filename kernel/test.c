@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "defs.h"
+#include "fs.h" 
 
 void
 test_printf(void)
@@ -25,27 +26,23 @@ test_block(void)
     struct CacheBuffer* sb;
     sb = bread(0, 0);
     kprintf("%s\n", sb->data);
+}
 
+void
+test_inode(void)
+{
+    struct inode *in;
+    in = ialloc(0, FILE);
+    in->size = 4096;
+    iupdate(in);
 }
 
 void
 test(void)
 {
     init_disk();
-    print_disk();
-    kprintf("\n");
-    char m[] = "Hello world and meee";
-    write_disk(0, m, sizeof(m));
-    print_disk();
-    kprintf("\n");
     init_fs(0);
-    extern struct spblock spb;
-    kprintf("Magic num is %d\n", spb.magic);
     print_disk();
-    balloc(0);
-    balloc(0);
-    balloc(0);
-    kprintf("\n");
+    test_inode();
     print_disk();
-    test_block();
 }

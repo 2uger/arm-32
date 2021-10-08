@@ -1,5 +1,5 @@
 #define NPROC 3 
-#define PROC_SIZE 0x00001000
+#define PROC_SIZE 4096
 
 // file system level
 // buffers

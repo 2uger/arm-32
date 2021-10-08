@@ -16,11 +16,13 @@
 // block containing bitmap bit for demanding block
 #define BMBLOCK(b, spb) ((b/BPB) + spb.bitmap_start)
 
+#define MAX_FILE_NAME 12
+
 
 // superblock
 struct spblock {
     uint32_t magic; // FS magic number, used to recognize file system
-    uint32_t size;  // FS blocks amount
+    uint32_t size;  // FS size
 
     uint32_t data_blocks_num;
     uint32_t inodes_num;
@@ -50,5 +52,13 @@ struct inode {
     uint32_t size; // how much data in file
     uint32_t addrs[DATA_BLOCKS_NUM]; // addresses of all file's blocks
 };
+
+// directory is a file containing links to file
+struct dirent {
+    uint32_t inum;
+    char name[MAX_FILE_NAME];
+};
+
+enum InodeType {FILE, DIRECTORY, DEVICE};
 
 #endif

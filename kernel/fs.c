@@ -2,6 +2,7 @@
 // Basic structure on disk:
 // SPB :: INODES :: BITMAP :: BLOCKS
 
+#include <stddef.h>
 #include <stdint.h>
 
 #include "buf.h"
@@ -109,7 +110,9 @@ bfree(uint32_t dev, uint32_t block_num) {
 // Simple example is:
 
 // ialloc(int dev, int num) -- allocate fresh inode in disk
+//                             (create file actually)
 // iget(int dev, int num) -- return in memory copy of demanding inode
+//                           if no such inode -> process empty slot
 // ilock(struct inode *inode) -- locking in memory inode, so you can modify it
 //                               read from memory if necessary
 
@@ -121,6 +124,7 @@ struct {
 
 static struct inode *iget(uint32_t, uint32_t);
 
+// init in memory inodes data structure
 void
 iinit(void)
 {
@@ -136,12 +140,13 @@ ialloc(uint32_t dev, uint8_t type)
     struct CacheBuffer *b;
     struct dinode *din;
 
-    for (uint32_t i = 1; i < spb.inodes_num; i++) {
+    for (uint32_t i = 0; i < spb.inodes_num; i++) {
         b = bread(dev, IBLOCK(i, spb));
+        kprintf("%d\n", IBLOCK(i, spb));
         din = (struct dinode*)(b->data + i % INODES_PER_BLOCK);
-        if (din->type == 0) {
-            // TODO: Dont really know why zeroing only by size of pointer, not struct itself
-            mmemset(din, 0, sizeof(*din));
+        kprintf("%d\n", din->type);
+        if (din->type == 48) {
+            mmemset(din, 0, sizeof(struct dinode));
             din->type = type;
             bwrite(b);
             brelease(b);
@@ -152,7 +157,7 @@ ialloc(uint32_t dev, uint8_t type)
     panic("no free inodes");
 }
 
-// copying in memory inode to disk
+// copy in memory inode to disk
 void
 iupdate(struct inode *in)
 {
@@ -162,7 +167,7 @@ iupdate(struct inode *in)
     b = bget(in->dev, in->inum);
     dn = (struct dinode*)b->data + in->inum % INODES_PER_BLOCK;
     dn->type = in->type;
-    dn->nlink = dn->nlink;
+    dn->nlink = in->nlink;
     dn->size = in->size;
     mmemmove(dn->addrs, in->addrs, sizeof(in->addrs));
     bwrite(b);
@@ -177,14 +182,26 @@ iupdate(struct inode *in)
 static struct inode*
 iget(uint32_t dev, uint32_t inum)
 {
-    struct inode *in;
+    struct inode *in, *empty;
 
-    for (in = &itable.inode[0]; in < &itable.inode[INODES_PER_BLOCK]; in++) {
-        if (in->dev == dev && in->inum == inum) {
+    empty = NULL;
+
+    for (in = itable.inode; in < &itable.inode[INODES_PER_BLOCK]; in++) {
+        if (in->ref > 0 && in->dev == dev && in->inum == inum) {
             in->ref++;
             return in;
         }
+        if (in->ref == 0 && empty == NULL)
+            empty = in;
     }
+    if (empty == NULL)
+        panic("iget: finding inode in memory");
+    in = empty;
+    in->dev = dev;
+    in->inum = inum;
+    in->ref = 1;
+    in->valid = 0;
+    return in;
 }
 //
 // lock inode, read from disk if necessary
@@ -194,7 +211,7 @@ ilock(struct inode *in)
     struct CacheBuffer *buf;
     struct dinode *dn;
 
-    if (in == 0 || in->ref == 0)
+    if (in == NULL || in->ref == 0)
         panic("ilock: bad inode");
 
     if (in->valid == 0) {
@@ -211,7 +228,6 @@ ilock(struct inode *in)
             panic("ilock: inode got no type");
     }
 }
-
 
 // unlcok inode
 void
@@ -248,7 +264,7 @@ iput(struct inode *ip)
 
 
 // inode content
-// return address of bn in current inode
+// return block number in current inode
 uint32_t
 bmap(struct inode *in, uint32_t bn)
 {
@@ -256,7 +272,6 @@ bmap(struct inode *in, uint32_t bn)
     if (in->addrs[bn] == 0)
         in->addrs[bn] = addr = balloc(in->dev);
     return addr;
-
 }
 
 // read information from inode 
@@ -295,13 +310,37 @@ writei(struct inode *in, uint32_t src_addr, uint32_t off, uint32_t n)
 
     if (off > in->size || n < 0)
         return -1;
-    if (off + n > DATA_BLOCKS_NUM  * BLOCK_SIZE)
+    // impossible to read more than all filesystem have
+    if (off + n > DATA_BLOCKS_NUM * BLOCK_SIZE)
         return -1;
 
     for (tot = 0; tot < n; tot += m, off += m, src_addr += m) {
+        // iterate through inode data blocks, that inode
+        // store in addrs field
         buf = bread(in->dev, bmap(in, off / BLOCK_SIZE));
+        // first case is when we stop reading from somewhere inside block
         m = min(n - tot, BLOCK_SIZE - off % BLOCK_SIZE);
         mmemmove(buf->data, src_addr, m);
     }
 }
 
+// as for now, we dont have directory hierarchy, because just want to test
+// simple inodes with file names and one directory, that store all of them
+struct inode*
+dirlookup(char *filename)
+{
+    struct dirent *de;
+    struct inode *in;
+    
+    // directory file is first inode
+    in = iget(0, 0);
+    ilock(in);
+
+    for (uint32_t off = 0; off < in->size; off += sizeof(struct dirent)) {
+        readi(in, de, off, sizeof(struct dirent));
+        if (sstrcmp(de->name, filename, MAX_FILE_NAME)) {
+            return iget(0, de->inum);
+        }
+    }
+    return 0;
+}
