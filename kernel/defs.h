@@ -31,9 +31,10 @@ void save_uregs(struct trapframe*);
 void main();
 
 //string.c
-void mmemset(void * dst, char value, uint32_t size);
-void mmemmove(void * dst, const void * src, uint32_t size);
-char *sstrcpy(char *, const char *, uint32_t);
+void mmemset(void* dst, char value, uint32_t size);
+void mmemmove(void* dst, const void* src, uint32_t size);
+char *sstrcpy(char*, const char*, uint32_t);
+uint32_t sstrcmp(const char*, const char*, uint32_t);
 
 // panic.c
 void panic(char *);
@@ -68,6 +69,8 @@ void ilock(struct inode*);
 void iunlock(struct inode*);
 void itrunc(struct inode*);
 void iput(struct inode*);
+uint32_t readi(struct inode*, uint32_t, uint32_t, uint32_t);
+uint32_t writei(struct inode*, uint32_t, uint32_t, uint32_t);
 
 
 

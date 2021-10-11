@@ -33,8 +33,23 @@ test_inode(void)
 {
     struct inode *in;
     in = ialloc(0, FILE);
-    in->size = 4096;
-    iupdate(in);
+    ilock(in);
+    char m[] = "String for inode";
+    kprintf("%s\n", m);
+    writei(in, m, 0, sizeof(m));
+    char n[20];
+    readi(in, n, 0, 20);
+    kprintf("Result is %s\n", n);
+}
+
+void
+test_strcmp(void)
+{
+    char l[] = "Hellorer";
+    char r[] = "Hellowew";
+    kprintf("%d\n", sstrcmp(l, r, 2));
+    kprintf("%d\n", sstrcmp(l, r, 5));
+    kprintf("%d\n", sstrcmp(l, r, 6));
 }
 
 void
@@ -42,7 +57,5 @@ test(void)
 {
     init_disk();
     init_fs(0);
-    print_disk();
     test_inode();
-    print_disk();
 }

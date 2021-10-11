@@ -57,7 +57,7 @@ sstrcpy(char *s, const char *dst, uint32_t size)
 uint32_t
 sstrcmp(const char *l, const char *r, uint32_t n)
 {
-    while (!n || *l || *l == *r) {
+    while (n && *l == *r) {
         n--;
         l++;
         r++;

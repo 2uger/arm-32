@@ -45,30 +45,25 @@ bget(uint32_t dev, uint32_t blockn)
 {
     //Scan buffer array, if find return, else allocate a new one
     struct CacheBuffer *buf;
-    buf = bcache.buf;
-    
-    while (buf < &bcache.buf[BCACHE_NUM]) {
+
+
+    for (buf = bcache.buf; buf < &bcache.buf[BCACHE_NUM]; buf++) {
         // find block with same dev and block num
-        if (buf->dev == dev && buf->blockn == blockn) {
+        if (buf->blockn == blockn) {
             buf->refcnt++;
-            kprintf("Find demanding block in cache\n");
             return buf;
         }
-        buf++;
     }
     
     // dont find demanding block, allocate a new one
-    buf = bcache.buf;
-    while (buf <= &bcache.buf[BCACHE_NUM]) {
+    for (buf = bcache.buf; buf < &bcache.buf[BCACHE_NUM]; buf++) {
         if (buf->refcnt == 0) {
-            kprintf("Allocate new block in cache\n");
             buf->dev = dev;
             buf->blockn = blockn;
             buf->valid = 0;
             buf->refcnt = 1;
             return buf;
         }
-        buf++;
     }
     panic("Cant allocate new free cache buffer");
 }
@@ -83,7 +78,6 @@ bread(uint32_t dev, uint32_t blockn)
     buf = bget(dev, blockn);
     if (!buf->valid) {
         // read into buffer from disk
-        kprintf("Block is not valid\n");
         read_disk(blockn, 1, buf->data); 
         buf->valid = 1;
     }

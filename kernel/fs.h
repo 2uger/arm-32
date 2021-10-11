@@ -59,6 +59,6 @@ struct dirent {
     char name[MAX_FILE_NAME];
 };
 
-enum InodeType {FILE, DIRECTORY, DEVICE};
+enum InodeType {FILE=1, DIRECTORY, DEVICE};
 
 #endif

@@ -40,7 +40,7 @@ init_disk(void)
         // zeroing all blocks in disk
         uint32_t i;
         for (i = 0; i < BLOCK_SIZE; i++) {
-            b->data[i] = '0';
+            b->data[i] = 0;
         } 
     } 
 }
