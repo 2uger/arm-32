@@ -22,21 +22,32 @@ pputchar(const char c)
 static char nums[] = "0123456789abcdef";
 
 void
-printint(uint32_t value, uint32_t base)
+printint(int32_t value, uint8_t base, uint8_t sign)
 {
     if (value == 0) {
         pputchar('0');
         return;
     }
     char buf[16];
-    uint32_t x;
-    x = value;
+    int32_t x;
+
+    if (sign && value < 0)
+        x = value * (-1);
+    else {
+        sign = 0;
+        x = value;
+    }
+
     uint32_t i = 0;
     while (x > 0) {
         buf[i] = nums[x % base];
         x /= base;
         i++;
     }
+
+    if (sign)
+        buf[i++] = '-';
+
     switch (base) {
         case (8): 
             pputchar('0');
@@ -52,7 +63,7 @@ printptr(uint32_t p_addr)
 {
     pputchar('0');
     pputchar('x');
-    printint(p_addr, 16);
+    printint(p_addr, 16, 1);
 }
 
 
@@ -72,11 +83,11 @@ kprintf(char * format, ...)
         switch(*c) {
         // decimal
         case ('d'):
-            printint(va_arg(ap, uint32_t), 10);
+            printint(va_arg(ap, uint32_t), 10, 1);
             break;
         // hex
         case ('x'):
-            printint(va_arg(ap, uint32_t), 16);
+            printint(va_arg(ap, uint32_t), 16, 1);
             break;
         // address
         case ('p'):
