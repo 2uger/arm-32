@@ -65,16 +65,16 @@ bget(uint32_t dev, uint32_t blockn)
             return buf;
         }
     }
-    panic("Cant allocate new free cache buffer");
+    panic("can't allocate new free cache buffer");
 }
 
 // Return buffer with actual data
 struct CacheBuffer* 
 bread(uint32_t dev, uint32_t blockn)
 {
-    // Call bget, if it's new, call read routine from sd card
     struct CacheBuffer* buf;
     
+    // call bget, if it's new, call read routine from sd card
     buf = bget(dev, blockn);
     if (!buf->valid) {
         // read into buffer from disk
@@ -87,6 +87,12 @@ bread(uint32_t dev, uint32_t blockn)
 void
 bwrite(struct CacheBuffer *buf)
 {
+    struct CacheBuffer *b;
+
+
+    for (b = bcache.buf; b < &bcache.buf[BCACHE_NUM]; b++) {
+        kprintf("%d, %d, %s\n", b->dev, b->blockn, b->data);
+    }
     // Write buffer content into sd card
     write_disk(buf->blockn, buf->data, sizeof(buf->data));
 }

@@ -34,7 +34,7 @@ test_inode(void)
     struct inode *in;
     in = ialloc(0, FILE);
     ilock(in);
-    char m[] = "String for inode";
+    char m[] = "String for inodee";
     kprintf("%s\n", m);
     writei(in, m, 0, sizeof(m));
     char n[20];

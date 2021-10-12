@@ -22,7 +22,7 @@ init_fs(uint32_t dev)
     buf = bread(dev, 0);
     mmemmove(buf->data, &m, 4);
     spb.magic = 9999;
-    spb.size = BLOCKS_NUM * 8;
+    spb.size = BLOCKS_NUM * BLOCK_SIZE;
     spb.data_blocks_num = DATA_BLOCKS_NUM;
     spb.inodes_num = INODES_NUM;
     spb.inodes_start = 4;
@@ -64,12 +64,12 @@ balloc(uint32_t dev)
     uint32_t m, b, bm;
     struct CacheBuffer *buf;
 
-    for (b = 0; b < spb.size; b+=BPB) {
+    for (b = 1; b < spb.size; b+=BPB) {
         // if block's size 8 => we get 64 bits as bitmap
         // get block of 8*8 bits showing status of blocks
         buf = bread(dev, BMBLOCK(b, spb));
         kprintf("Read %d\n", BMBLOCK(b, spb));
-        // iterating through byte till BPB or untill blocks amout on disk
+        // iterating through byte till BPB or untill blocks amount on disk
         for (bm = 0; bm < BPB || bm + b < spb.size; bm++) {
             // actually we iterating through bits in byte(char)
             m = 1 << (bm % 8);
@@ -141,8 +141,9 @@ ialloc(uint32_t dev, uint8_t type)
     struct dinode *din;
 
     for (uint32_t i = 1; i < spb.inodes_num; i++) {
-        b = bread(dev, IBLOCK(i, spb));
-        din = (struct dinode*)(b->data + i % INODES_PER_BLOCK);
+        int kkk = IBLOCK(i, spb);
+        b = bread(dev, kkk);
+        din = (struct dinode*)b->data + i % INODES_PER_BLOCK;
         if (din->type == 0) {
             mmemset(din, 0, sizeof(struct dinode));
             din->type = type;
@@ -162,8 +163,8 @@ iupdate(struct inode *in)
     struct CacheBuffer *b;
     struct dinode *dn;
 
-    b = bget(in->dev, in->inum);
-    dn = (struct dinode*)(b->data + in->inum % INODES_PER_BLOCK);
+    b = bget(in->dev, IBLOCK(in->inum, spb));
+    dn = (struct dinode*)b->data + in->inum % INODES_PER_BLOCK;
     dn->type = in->type;
     dn->nlink = in->nlink;
     dn->size = in->size;
@@ -193,7 +194,7 @@ iget(uint32_t dev, uint32_t inum)
             empty = in;
     }
     if (empty == NULL)
-        panic("iget: finding inode in memory");
+        panic("iget: don't finding inode in memory");
     in = empty;
     in->dev = dev;
     in->inum = inum;
@@ -270,12 +271,13 @@ bmap(struct inode *in, uint32_t bn)
     uint32_t addr;
     if ((addr = in->addrs[bn]) == 0)
         in->addrs[bn] = addr = balloc(in->dev);
+    kprintf("Address is %d\n", addr);
     return addr;
 }
 
 // read information from inode 
 // off - offset
-// n   - size of information to copy 
+// n   - size of information to read
 uint32_t
 readi(struct inode *in, uint32_t dst_addr, uint32_t off, uint32_t n)
 {
@@ -285,13 +287,14 @@ readi(struct inode *in, uint32_t dst_addr, uint32_t off, uint32_t n)
     uint32_t m;
     struct CacheBuffer *buf;
 
-    //if (off > in->size)
-     //   return 0;
-    //if (off + n > in->size)
-     //   n = in->size - off;
+    if (off > in->size)
+        return 0;
+    if (off + n > in->size)
+        n = in->size - off;
 
     for (tot = 0; tot < n; tot += m, off += m, dst_addr += m) {
-        buf = bread(in->dev, 2);//bmap(in, off / BLOCK_SIZE));
+        buf = bread(in->dev, 1);//bmap(in, off / BLOCK_SIZE));
+        kprintf("%s\n", buf->data);
 
         m = min(n - tot, BLOCK_SIZE - off % BLOCK_SIZE);
         // copy data to dst addrs
@@ -316,7 +319,7 @@ writei(struct inode *in, uint32_t src_addr, uint32_t off, uint32_t n)
     for (tot = 0; tot < n; tot += m, off += m, src_addr += m) {
         // iterate through inode data blocks, that inode
         // store in addrs field
-        buf = bread(in->dev, 2);//bmap(in, off / BLOCK_SIZE));
+        buf = bread(in->dev, bmap(in, off / BLOCK_SIZE));
         // first case is when we stop reading from somewhere inside block
         m = min(n - tot, BLOCK_SIZE - off % BLOCK_SIZE);
         mmemmove(buf->data, src_addr, m);
@@ -324,6 +327,9 @@ writei(struct inode *in, uint32_t src_addr, uint32_t off, uint32_t n)
         bwrite(buf);
         brelease(buf);
     }
+    // means write more data to end of file or rewrite part of that
+    in->size = (off > in->size) ? off : in->size;
+    kprintf("%d\n", in->size);
     iupdate(in);
     return tot;
 }
