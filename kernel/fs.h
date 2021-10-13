@@ -55,8 +55,8 @@ struct inode {
 
 // directory is a file containing links to file
 struct dirent {
-    uint32_t inum;
     char name[MAX_FILE_NAME];
+    uint32_t inum;
 };
 
 enum InodeType {FILE=1, DIRECTORY, DEVICE};

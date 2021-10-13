@@ -21,6 +21,7 @@ SRC = \
     $K/disk_emulate.c \
     $K/buf.c \
     $K/fs.c \
+    $K/sysfile.c \
     $K/sys_call.c \
     $K/test.c 
 
@@ -38,6 +39,7 @@ OBJS = \
     disk_emulate.o \
     buf.o \
     fs.o \
+    sysfile.o \
     sys_call.o \
     test.o \
 

@@ -49,7 +49,7 @@ bget(uint32_t dev, uint32_t blockn)
 
     for (buf = bcache.buf; buf < &bcache.buf[BCACHE_NUM]; buf++) {
         // find block with same dev and block num
-        if (buf->blockn == blockn) {
+        if (buf->dev == dev && buf->blockn == blockn) {
             buf->refcnt++;
             return buf;
         }
@@ -58,6 +58,7 @@ bget(uint32_t dev, uint32_t blockn)
     // dont find demanding block, allocate a new one
     for (buf = bcache.buf; buf < &bcache.buf[BCACHE_NUM]; buf++) {
         if (buf->refcnt == 0) {
+            kprintf("Current data is %s,   %d\n", buf->data, blockn);
             buf->dev = dev;
             buf->blockn = blockn;
             buf->valid = 0;
@@ -89,10 +90,6 @@ bwrite(struct CacheBuffer *buf)
 {
     struct CacheBuffer *b;
 
-
-    for (b = bcache.buf; b < &bcache.buf[BCACHE_NUM]; b++) {
-        kprintf("%d, %d, %s\n", b->dev, b->blockn, b->data);
-    }
     // Write buffer content into sd card
     write_disk(buf->blockn, buf->data, sizeof(buf->data));
 }

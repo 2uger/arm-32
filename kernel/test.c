@@ -43,6 +43,16 @@ test_inode(void)
 }
 
 void
+test_dir_entry(void)
+{
+    struct inode *dir;
+    dir = ialloc(0, DIRECTORY);
+    kprintf("Inum of dir is %d\n", dir->inum);
+    ilock(dir);
+    dirlink(dir, "myfile", 2);
+}
+
+void
 test_strcmp(void)
 {
     char l[] = "Hellorer";
@@ -57,5 +67,7 @@ test(void)
 {
     init_disk();
     init_fs(0);
-    test_inode();
+    test_dir_entry();
+    kprintf("Disk\n");
+    print_disk();
 }

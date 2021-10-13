@@ -64,6 +64,7 @@ uint32_t balloc(uint32_t);
 // inodes
 void iinit(void);
 struct inode* ialloc(uint32_t, uint8_t);
+struct inode* iget(uint32_t, uint32_t);
 void iupdate(struct inode*);
 void ilock(struct inode*);
 void iunlock(struct inode*);
@@ -72,7 +73,11 @@ void iput(struct inode*);
 uint32_t readi(struct inode*, uint32_t, uint32_t, uint32_t);
 uint32_t writei(struct inode*, uint32_t, uint32_t, uint32_t);
 
+struct inode* dirlookup(struct inode*, char*);
+uint32_t dirlink(struct inode*, char*, uint32_t);
 
+// sysfile.c
+void create(char*, enum InodeType);
 
 // sys_call.c
 void sys_call(uint32_t);
