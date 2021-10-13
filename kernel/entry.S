@@ -37,10 +37,6 @@ entry:
     ldr r1, =kernel_setup
     bx r1
 
-ttest:
-    mrs r0, PSP
-    mrs r0, MSP
-    mrs r0, CONTROL
 //copy_data_to_ram:
 //    .extern _kernel_base
 //    ldr r0, =_kernel_base
