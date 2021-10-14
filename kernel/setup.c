@@ -31,6 +31,14 @@ void timerinit(void) {
 void kernel_setup(void) {
     vtableinit();
     timerinit();
-    test();
-    main();
+    consoleinit ();  
+    binit(); // initialize memory-disk cache buffers
+    init_fs(0);
+    procinit ();
+    userinit ();
+    kprintf("Kernel is booting up, just wait and relax!!!\n");
+
+    test ();
+
+    scheduler ();
 }

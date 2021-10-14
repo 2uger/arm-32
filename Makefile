@@ -12,7 +12,6 @@ U = user
 SRC = \
     $K/console.c \
     $K/isr.c \
-    $K/main.c \
     $K/proc.c \
     $K/setup.c \
 	$K/string.c \
@@ -30,7 +29,6 @@ OBJS = \
 	activate.o \
     console.o \
     isr.o \
-    main.o \
     proc.o \
     setup.o \
     panic.o \

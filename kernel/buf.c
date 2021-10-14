@@ -23,19 +23,13 @@ struct {
 } bcache;
 
 // Init cache buffer
-// Actually initialize list like a cyclic loop
+// For init locks on buffers
 void
 binit(void)
 {
     struct CacheBuffer *b;
 
     for (b = bcache.buf; b < &bcache.buf[BCACHE_NUM]; b++) {
-        b->valid = 0;
-        b->dirty = 0;
-
-        b->dev = 0;
-        b->blockn = 0;
-        b->refcnt = 0;
     }
 }
 

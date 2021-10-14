@@ -76,7 +76,6 @@ write_disk(uint32_t blockn, void *buffer, uint32_t size)
     uint32_t blocks_num = size / BLOCK_SIZE;
     if (blockn + blocks_num >= BLOCKS_NUM) {
         kprintf("Out of blocks!\n");
-        kprintf("%d, %d\n", blockn, blocks_num);
         return -1;
     }
 

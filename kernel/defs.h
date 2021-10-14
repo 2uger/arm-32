@@ -62,6 +62,7 @@ void init_fs(uint32_t);
 void readspblock(uint32_t, struct spblock *);
 uint32_t balloc(uint32_t);
 // inodes
+void init_fs();
 void iinit(void);
 struct inode* ialloc(uint32_t, uint8_t);
 struct inode* iget(uint32_t, uint32_t);
