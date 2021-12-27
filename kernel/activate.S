@@ -12,7 +12,6 @@ activate:
     mov r0, #3
     msr control, r0
     isb
-    //svc #3
 
     ldm r1!, {r2, r3, r4, r5, r6, r7}
     ldr r0, [r1]

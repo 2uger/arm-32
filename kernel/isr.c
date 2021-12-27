@@ -2,6 +2,7 @@
 #include "defs.h"
 #include "proc.h"
 
+
 void
 nmi_handler(void)
 {
@@ -19,18 +20,21 @@ hardfault_handler(void)
 void
 memory_manag_fault_handler(void)
 {
+    kprintf("Memory management fault handler\n");
     while(1){};
 }
 
 void
 bus_fault_handler(void)
 {
+    kprintf("Bus fault handler\n");
     while(1){};
 }
 
 void
 usage_fault_handler(void)
 {
+    kprintf("Usage fault handler\n");
     while(1){};
 }
 
@@ -44,6 +48,7 @@ svc_handler(void)
     struct proc* p = myproc();
     save_uregs(&p->trapframe);
     kprintf("Save user regs %x, %x, %x\n", p->trapframe.r2, p->trapframe.r6, p->trapframe.pc);
+    return;
     while(1) {};
     sys_call(p->trapframe.r6);
 }

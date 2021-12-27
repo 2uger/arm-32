@@ -16,16 +16,16 @@
 /* 100000000Mhz * 1ms = 1000000 - 1 */
 #define RELOAD_VALUE  9999999
 
+void timerinit(void) {
+    STRELOAD = RELOAD_VALUE;
+    STCTRL = (1<<SBIT_ENABLE) | (1<<SBIT_TICKINT) | (1<<SBIT_CLKSOURCE);
+}
+
 void vtableinit(void) {
     // As kernel contain vector table at first
     // of itself image, we just need to setup 
     // right offset
     // SCB->VTOR = KERNEL_SPACE_BASE;
-}
-
-void timerinit(void) {
-    STRELOAD = RELOAD_VALUE;
-    STCTRL = (1<<SBIT_ENABLE) | (1<<SBIT_TICKINT) | (1<<SBIT_CLKSOURCE);
 }
 
 void kernel_setup(void) {
@@ -37,8 +37,6 @@ void kernel_setup(void) {
     procinit ();
     userinit ();
     kprintf("Kernel is booting up, just wait and relax!!!\n");
-
-    test ();
 
     scheduler ();
 }

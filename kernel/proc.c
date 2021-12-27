@@ -92,10 +92,11 @@ scheduler(void)
     while (true) {
         for (p = proc; p < &proc[NPROC]; p++) {
             if (p->state == READY) {
-                kprintf("Proc with READY state\n");
-                p->state = RUNNING;
+                //kprintf("Proc with READY state\n");
+                //p->state = RUNNING;
                 cpu.proc = p;
                 // make context switch
+                continue;
                 activate(p->ustack, &p->trapframe);
             }
         }  

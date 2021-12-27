@@ -1,3 +1,4 @@
+// Collections of function to work with memory array and strings
 #include "stdint.h"
 
 // since it already define in compiler

@@ -1,4 +1,4 @@
-// Disk simple double linked list of buffer caches
+// Disk simple array of buffer caches
 // Buffer cache actually hold information of one disk block
 // Cache work by simple principle: LRU
 

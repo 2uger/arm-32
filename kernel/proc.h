@@ -18,6 +18,7 @@ struct trapframe {
     uint32_t r7;
     uint32_t pc;
 };
+
 /* Structure to store all information about process
  * To be able to get all needed information about process
  */
