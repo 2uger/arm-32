@@ -14,8 +14,8 @@ SRC = \
     $K/isr.c \
     $K/proc.c \
     $K/setup.c \
-	$K/string.c \
-	$K/panic.c \
+    $K/string.c \
+    $K/panic.c \
     $K/uart.c \
     $K/disk_emulate.c \
     $K/buf.c \
@@ -26,13 +26,13 @@ SRC = \
 
 OBJS = \
     entry.o \
-	activate.o \
+    activate.o \
     console.o \
     isr.o \
     proc.o \
     setup.o \
     panic.o \
-	string.o \
+    string.o \
     uart.o \
     disk_emulate.o \
     buf.o \
