@@ -1,10 +1,7 @@
-### What is Vision?
-Basically it's super light and simple kernel for Cortex m3 CPU
-Mostly to write basic concepts in OS(threads, context switching, memory management...)
 ### Environment
 We actually need arm-none-eabi-... setup to run gcc, binutils and gdb
 Use Dockerfile to build image with all needed packages inside
-That is how Docker helps avoid packages inside system, kinda cool...
+That is how Docker helps avoid packages inside host system, kinda cool...
 ### How to use:
 * **make**
     build kernel
