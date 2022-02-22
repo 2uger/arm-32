@@ -1,7 +1,8 @@
+### Learn Cortex-m3 arch
 ### Environment
-We actually need arm-none-eabi-... setup to run gcc, binutils and gdb
-Use Dockerfile to build image with all needed packages inside
-That is how Docker helps avoid packages inside host system, kinda cool...
+We actually need arm-none-eabi-... setup to run gcc, binutils and gdb<br>
+Use Dockerfile to build image with all needed packages inside<br>
+It helps to keep yours host system clean, appreciate that...
 ### How to use:
 * **make**
     build kernel
