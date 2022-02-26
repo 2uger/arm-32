@@ -1,35 +1,38 @@
 kernel_vector:
     .word 0x20001000   // Stack pointer
     .word entry       // entry point
-    .word hang
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
-    .word hang 
+    .word svc
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
+    .word svc 
 
 .type entry, %function
 entry:
+    mov r0, #0
+    msr PRIMASK, r0
+
     mov r1, #0x4
     bl cp_data2ram
     bl zero_bss
-    ldr r0, =0x42
-    bl print_char
+    bl activate
+    bl main
 
 cp_data2ram:
     .extern _data_base
@@ -59,6 +62,6 @@ zero_bss_loop:
     cmp r0, r1
     ble zero_bss_loop
     mov pc, r14
-
+ 
 hang:
     nop

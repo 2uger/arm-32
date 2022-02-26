@@ -11,3 +11,8 @@ It helps to keep yours host system clean, appreciate that...
     lm3s6965evb - simple arm chip with 64KB of RAM
 * **arm-none-eabi-gdb** -> **set architecture armv7** -> **target remote localhost:1234**
     run gdb, select right arch and connect to qemu
+
+### To release:
+* bootloader to be able to copy itself(text and data) into ram
+* vector table into ram
+* emulate user space with 2 cpu modes
