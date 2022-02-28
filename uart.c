@@ -3,10 +3,3 @@
 // Test on real hardware
 #include "stdint.h"
 
-static volatile uint32_t * const UART_DR = (uint32_t *)0x4000c000;
-
-void
-putchar(char c)
-{
-    *UART_DR = c;
-}

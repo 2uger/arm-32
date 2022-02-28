@@ -17,6 +17,7 @@ get_next_pid()
 void
 init_thread_pool()
 {
+    kprintf("Init thread pool\n");
     struct Thread * thread;
     for (thread = thread_pool; thread < &thread_pool[THREAD_NUM]; thread++) {
         thread->pc = (int)&user_space_code;
@@ -26,10 +27,11 @@ init_thread_pool()
 void
 scheduler()
 {
+    kprintf("Run scheduler\n");
     struct Thread * thread;
     while (1) {
         for (thread = thread_pool; thread < &thread_pool[THREAD_NUM]; thread++) {
-            if (thread->state == 0) {
+            if (thread->state == 1) {
                 activate(thread);
             }
         }

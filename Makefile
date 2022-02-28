@@ -8,13 +8,13 @@ OBJCOPY = $(TOOLCHAIN)objcopy
 
 SRC = \
     main.c \
-    uart.c \
+    console.c \
     scheduler.c \
 
 OBJS = \
     entry.o \
     main.o \
-    uart.o \
+    console.o \
     activate.o \
     scheduler.o \
 
