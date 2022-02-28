@@ -1,5 +1,11 @@
 #include <stdint.h>
 #include "scheduler.h"
 
-void activate(Thread * thread);
-void fprint(char * s);
+void setup();
+
+void activate(struct Thread * thread);
+
+void init_thread_pool();
+void scheduler();
+
+void user_space_code();

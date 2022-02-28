@@ -12,13 +12,14 @@ SECTIONS
     _text_end = .;
 
     _data_base = .;
-    .data : {
-        *(.rodata .rodata.*)
-        *(.data .data.*)
+    .data : ALIGN(4){
+        *(*data* *data*)
     } > RAM AT> ROM
     _data_end = .;
 
-    _bss_base = .;
-    .bss : { *(.bss .bss.*) } > RAM
+    .bss : ALIGN(4){
+        _bss_base = .;
+        *(.bss .bss.*)
+    } > RAM
     _bss_end = .;
 }

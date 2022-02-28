@@ -1,9 +1,11 @@
 #include <stdint.h>
 
-int
-main()
+#include "defs.h"
+
+void
+setup()
 {
-    return 0;
+    scheduler();
 }
 
 void

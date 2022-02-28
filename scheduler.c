@@ -2,9 +2,11 @@
 
 #include "defs.h"
 
+struct Thread thread_pool[THREAD_NUM];
+int global_pid = 1;
 
-Thread thread_pool[THREAD_NUM];
-static int global_pid = 0;
+char m = 'h';
+int n = 'h';
 
 int
 get_next_pid()
@@ -15,26 +17,20 @@ get_next_pid()
 void
 init_thread_pool()
 {
-    Thread * thread;
-    thread = thread_pool;
+    struct Thread * thread;
     for (thread = thread_pool; thread < &thread_pool[THREAD_NUM]; thread++) {
-        thread->pid = get_next_pid();
-        thread->state = 0;
-        thread->sp = 0;
-        thread->pc = 0;
+        thread->pc = (int)&user_space_code;
     }
 }
 
 void
 scheduler()
 {
-    Thread * thread;
+    struct Thread * thread;
     while (1) {
         for (thread = thread_pool; thread < &thread_pool[THREAD_NUM]; thread++) {
             if (thread->state == 0) {
-                fprint("Switch into user space");
                 activate(thread);
-                fprint("Get back from user space");
             }
         }
     }

@@ -3,21 +3,10 @@
 // Test on real hardware
 #include "stdint.h"
 
-int i = 12;
-char m[] = "Hello world";
+static volatile uint32_t * const UART_DR = (uint32_t *)0x4000c000;
 
 void
-print_char(char c)
+putchar(char c)
 {
-    __asm("ldr r1, =0x4000c000");
-    __asm("str r0, [r1]");
-    __asm("bx lr");
-}
-
-void
-fprint(char * s)
-{
-    char * c = s;
-    while (*c != '\n')
-        print_char(*c++);
+    *UART_DR = c;
 }

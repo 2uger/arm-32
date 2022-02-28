@@ -1,11 +1,13 @@
+#ifndef SCHEDULER_H
+#define SCHEDULER_H
 #include <stdint.h>
 
-#define THREAD_NUM 2
+#define THREAD_NUM 1
 
-typedef struct {
+struct Thread {
     int pid;
     int state;
     int sp;
     int pc;
-} Thread;
-
+};
+#endif
