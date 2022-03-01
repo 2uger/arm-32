@@ -1,5 +1,5 @@
 TOOLCHAIN = arm-none-eabi-
-COMMON_FLAGS = -Ikernel/ -O0 -nostdlib -nostartfiles -ffreestanding -Wall -mthumb -mcpu=cortex-m3 -c 
+COMMON_FLAGS = -Ikernel/ -O2 -nostdlib -nostartfiles -ffreestanding -Wall -mthumb -mcpu=cortex-m3 -c 
 
 CC = $(TOOLCHAIN)gcc
 AS = $(TOOLCHAIN)as
