@@ -13,6 +13,7 @@ activate:
 user_space_code:
     mov r0, #0x41
     svc #9
+    svc #1
 
 .data
 to_print_addr:

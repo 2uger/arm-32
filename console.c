@@ -15,6 +15,13 @@ pputchar(const char c)
     *UART_DR = c;
 }
 
+char
+ggetchar()
+{
+    char c = *UART_DR;
+    return c;
+}
+
 static char nums[] = "0123456789abcdef";
 
 void

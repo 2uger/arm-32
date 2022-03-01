@@ -39,6 +39,8 @@ scheduler()
                 thread->state = 0;
                 kprintf("Stop executing thread with %d pid\n", thread->pid);
             }
+            break;
         }
+        break;
     }
 }

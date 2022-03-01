@@ -7,13 +7,13 @@ LD = $(TOOLCHAIN)ld
 OBJCOPY = $(TOOLCHAIN)objcopy
 
 SRC = \
-    main.c \
+    isr.c \
     console.c \
     scheduler.c \
 
 OBJS = \
     entry.o \
-    main.o \
+    isr.o \
     console.o \
     activate.o \
     scheduler.o \
