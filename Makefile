@@ -10,12 +10,14 @@ SRC = \
     isr.c \
     console.c \
     scheduler.c \
+    user.c \
 
 OBJS = \
     entry.o \
     isr.o \
     console.o \
     activate.o \
+    user.o \
     scheduler.o \
 
 kernel: main activate entry

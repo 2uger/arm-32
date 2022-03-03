@@ -1,5 +1,5 @@
 kernel_vector:
-    .word 0x20001000   // Stack pointer
+    .word 0x20002000   // Stack pointer
     .word entry       // entry point
     .word svc
     .word svc 
@@ -27,7 +27,7 @@ kernel_vector:
 entry:
     bl cp_data2ram
     bl zero_bss
-    bl init_thread_pool
+    bl init_thread
     bl scheduler
     mov r0, #3
 
