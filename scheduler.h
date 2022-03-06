@@ -2,7 +2,7 @@
 #define SCHEDULER_H
 #include <stdint.h>
 
-#define THREAD_NUM 1
+#define THREAD_NUM 3
 
 struct Thread {
     int pid;

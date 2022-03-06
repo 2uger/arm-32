@@ -3,7 +3,7 @@
 
 void activate(struct Thread * thread);
 
-void init_thread();
+void init_thread_pool();
 void scheduler();
 
 void pputchar(const char);

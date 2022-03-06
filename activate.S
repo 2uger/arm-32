@@ -1,8 +1,11 @@
 .global user_space_code
 user_space_code:
     .extern greetings
+    push {lr}
     ldr r0, =greetings
     svc #1
+    pop {r1}
+    bx r1
 
 .global activate
 activate:

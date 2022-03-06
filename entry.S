@@ -27,7 +27,7 @@ kernel_vector:
 entry:
     bl cp_data2ram
     bl zero_bss
-    bl init_thread
+    bl init_thread_pool
     bl scheduler
     mov r0, #3
 
