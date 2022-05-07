@@ -4,7 +4,15 @@
 #include "params.h"
 
 struct Thread thread_pool[THREAD_NUM];
+struct Thread *current_active_thread;
+
 int global_pid = 1;
+
+struct Thread *
+get_current_active_thread()
+{
+    return current_active_thread;
+}
 
 int
 get_next_pid()
@@ -33,12 +41,13 @@ scheduler()
     struct Thread *t;
     while (1) {
         for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
-            kprintf("Got thread to execute with %d pid\n", t->pid);
+            // kprintf("Got thread to execute with %d pid\n", t->pid);
             t->state = USED;
+            current_active_thread = t;
             activate(t);
             // Thread stop executing, get back into kernel mode
             // deactivate();
-            kprintf("Stop executing thread with %d pid\n", t->pid);
+            // kprintf("Stop executing thread with %d pid\n", t->pid);
         }
     }
 }

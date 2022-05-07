@@ -1,5 +1,5 @@
 TOOLCHAIN = arm-none-eabi-
-COMMON_FLAGS = -Ikernel/ -O2 -nostdlib -nostartfiles -ffreestanding -Wall -mthumb -mcpu=cortex-m3 -c 
+COMMON_FLAGS = -Ikernel/ -O2 -nostdlib -nostartfiles -ffreestanding -Wall -mthumb -mcpu=cortex-m3 -c -g
 
 CC = $(TOOLCHAIN)gcc
 AS = $(TOOLCHAIN)as
@@ -11,6 +11,7 @@ SRC = \
     console.c \
     scheduler.c \
     user.c \
+    timer.c \
 
 OBJS = \
     entry.o \
@@ -19,6 +20,7 @@ OBJS = \
     activate.o \
     user.o \
     scheduler.o \
+    timer.o \
 
 kernel: main activate entry
 	$(LD) -o kernel.elf -T link.ld $(OBJS) 

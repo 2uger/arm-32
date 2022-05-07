@@ -9,11 +9,9 @@ char greetings3[] = "Hello, 3, from User space!!!\n";
 void
 input_loop()
 {
-    char c = ggetchar();
-    while (1) pputchar(c);
-    switch(c) {
+    switch('1') {
         case '1':
-            print(greetings1);
+            // print(greetings1);
             break;
         case '2':
             print(greetings2);

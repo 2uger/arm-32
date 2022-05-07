@@ -13,20 +13,21 @@ kernel_vector:
     .word svc 
     .word svc 
     .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
+    .word systick_handler 
+    .word systick_handler 
+    .word systick_handler 
+    .word systick_handler 
+    .word systick_handler 
+    .word systick_handler 
+    .word systick_handler 
+    .word systick_handler 
     .word svc 
 
 .type entry, %function
 entry:
     bl cp_data2ram
     bl zero_bss
+    bl timerinit
     bl init_thread_pool
     bl scheduler
     mov r0, #3

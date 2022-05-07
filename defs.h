@@ -3,6 +3,7 @@
 
 void activate(struct Thread *thread);
 
+struct Thread * get_current_active_thread(void);
 void init_thread_pool();
 void scheduler();
 
@@ -15,3 +16,5 @@ void print(const char *s);
 
 void svc();
 void system_call();
+
+void timerinit(void);
