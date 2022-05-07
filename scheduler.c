@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include "defs.h"
+#include "params.h"
 
 struct Thread thread_pool[THREAD_NUM];
 int global_pid = 1;
@@ -14,12 +15,13 @@ get_next_pid()
 void
 init_thread_pool()
 {
-    kprintf("Init thread\n");
-    struct Thread * t;
+    kprintf("Initialise thread pool\n");
+    int thread_num = 0;
+    struct Thread *t;
     for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
         t->pid = get_next_pid();
-        t->state = 0;
-        t->sp = 0x20004000;
+        t->state = UNUSED;
+        t->sp = 0x20003000 + thread_num * THREAD_SIZE;
         t->pc = (int)&user_space_code;
     }
 }
@@ -28,15 +30,15 @@ void
 scheduler()
 {
     kprintf("Run scheduler\n");
-    struct Thread * t;
+    struct Thread *t;
     while (1) {
         for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
             kprintf("Got thread to execute with %d pid\n", t->pid);
-            t->state = 1;
+            t->state = USED;
             activate(t);
-            // thread stop executing
+            // Thread stop executing, get back into kernel mode
+            // deactivate();
             kprintf("Stop executing thread with %d pid\n", t->pid);
         }
-        break;
     }
 }

@@ -8,6 +8,8 @@
 #include "defs.h"
 
 static volatile uint32_t * const UART_DR = (uint32_t *)0x4000c000;
+static volatile uint32_t * const UART_FR = (uint32_t *)0x4000c018;
+
 
 void
 pputchar(const char c)
@@ -18,8 +20,8 @@ pputchar(const char c)
 char
 ggetchar()
 {
-    char c = *UART_DR;
-    return c;
+    while(*UART_FR & 0x10) continue; //while empty wait
+    return UART_DR;
 }
 
 static char nums[] = "0123456789abcdef";
