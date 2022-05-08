@@ -1,27 +1,20 @@
 kernel_vector:
     .word 0x20002000   // Stack pointer
     .word entry       // entry point
-    .word svc
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
-    .word svc 
+    .word default_handler
+    .word default_handler 
+    .word default_handler 
+    .word default_handler 
+    .word default_handler 
+    .word default_handler 
+    .word default_handler 
+    .word default_handler 
+    .word default_handler 
+    .word svc_handler 
+    .word default_handler 
+    .word default_handler 
+    .word default_handler 
     .word systick_handler 
-    .word systick_handler 
-    .word systick_handler 
-    .word systick_handler 
-    .word systick_handler 
-    .word systick_handler 
-    .word systick_handler 
-    .word systick_handler 
-    .word svc 
 
 .type entry, %function
 entry:

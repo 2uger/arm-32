@@ -4,23 +4,40 @@
 
 
 void
-svc()
+svc_handler()
 {
-    __asm__("push {lr}");
-    __asm__("bl kprintf");
-    __asm__("pop {pc}");
-    __asm__("bx lr");
+    kprintf("SVC handler\n");
+    struct Thread *active_thread = get_current_active_thread();
+    kprintf("PID of active thread is %d\n", active_thread->pid);
 }
 
 void
 systick_handler()
 {
-    kprintf("In systick handler\n");
+    kprintf("Systick handler\n");
 
-    struct Thread *t = get_current_active_thread();
-    kprintf("Current thread pid: %d\n", t->pid);
+    struct Thread *active_thread = get_current_active_thread();
+    struct Thread *unused_thread = get_next_unused_thread();
+
+    kprintf("Current thread pid: %x\n", active_thread->stack_frame.sp);
+    kprintf("Unused thread pid: %x\n", unused_thread->stack_frame.sp);
+
     for (int i = 0; i < 1000000000; i++) {
         continue;
     }
-    return;
+}
+
+void
+pendsv_handler()
+{
+    kprintf("PendSV handler\n");
+}
+
+void
+default_handler()
+{
+    kprintf("Default handler\n");
+
+    while (1)
+    ;
 }

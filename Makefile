@@ -12,6 +12,7 @@ SRC = \
     scheduler.c \
     user.c \
     timer.c \
+    interrupts.c \
 
 OBJS = \
     entry.o \
@@ -21,6 +22,7 @@ OBJS = \
     user.o \
     scheduler.o \
     timer.o \
+    interrupts.o \
 
 kernel: main activate entry
 	$(LD) -o kernel.elf -T link.ld $(OBJS) 
