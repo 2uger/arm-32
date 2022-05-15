@@ -23,7 +23,6 @@ entry:
     bl timerinit
     bl init_thread_pool
     bl scheduler
-    mov r0, #3
 
 cp_data2ram:
     .extern _data_base
@@ -59,6 +58,3 @@ zero_bss_loop:
     cmp r0, r1
     blt zero_bss_loop
     mov pc, r14
- 
-hang:
-    nop

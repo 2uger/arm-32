@@ -53,17 +53,14 @@ scheduler()
     // irq_off();
     while (1) {
         for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
-            // kprintf("Got thread to execute with %d pid\n", t->pid);
+            kprintf("Got thread to execute with %d pid\n", t->pid);
             t->state = USED;
             cpu.active_thread = t;
             // irq_on();
             activate(t);
             // Thread stop executing, get back into kernel mode
             t->state = UNUSED;
-            for (int i = 0; i < 1000000000; i++) {
-                continue;
-            }
-            // kprintf("Stop executing thread with %d pid\n", t->pid);
+            kprintf("Stop executing thread with %d pid\n", t->pid);
         }
     }
 }
