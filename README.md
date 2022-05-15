@@ -1,5 +1,5 @@
 ### Learning Cortex m3 CPU arch
-Bootloader code to copy data and code into RAM.<br>
+Code to copy data and code into RAM.<br>
 Thread pool with context switching and kernel-user space usage.
 ### Environment
 We actually need arm-none-eabi-... setup to run gcc, binutils and gdb<br>
