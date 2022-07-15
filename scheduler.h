@@ -24,6 +24,6 @@ struct Cpu {
     struct Thread *active_thread;
 };
 
-enum thread_state { UNUSED, USED };
+enum thread_state { ACTIVE, INACTIVE };
 
 #endif

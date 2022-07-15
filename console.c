@@ -20,8 +20,8 @@ pputchar(const char c)
 char
 ggetchar()
 {
-    while(*UART_FR & 0x10) continue; //while empty wait
-    return UART_DR;
+    char c = *UART_DR;
+    return c;
 }
 
 static char nums[] = "0123456789abcdef";
@@ -59,7 +59,6 @@ printptr(uint32_t p_addr)
     pputchar('x');
     printint(p_addr, 16);
 }
-
 
 void
 kprintf(char * format, ...)

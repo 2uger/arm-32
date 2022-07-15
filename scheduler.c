@@ -11,7 +11,6 @@ int global_pid = 1;
 struct Thread *
 get_current_active_thread()
 {
-    // cpu.active_thread->state = UNUSED;
     return cpu.active_thread;
 }
 
@@ -20,8 +19,9 @@ get_next_unused_thread()
 {
     struct Thread *t;
     for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
-        if (t->state == UNUSED) return t;
+        if (t->state == INACTIVE) return t;
     }
+    kprintf("ERROR: run out of the threads\n");
 }
 
 int
@@ -38,10 +38,10 @@ init_thread_pool()
     struct Thread *t;
     for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
         t->pid = get_next_pid();
-        t->state = UNUSED;
+        t->state = INACTIVE;
         t->stack_frame.sp = 0x20003000 + thread_num * THREAD_SIZE;
         thread_num++;
-        t->stack_frame.pc = (int)&user_space_code;
+        t->stack_frame.pc = (int)&input_loop;
     }
 }
 
@@ -50,17 +50,17 @@ scheduler()
 {
     kprintf("Run scheduler\n");
     struct Thread *t;
-    // irq_off();
     while (1) {
         for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
-            kprintf("Got thread to execute with %d pid\n", t->pid);
-            t->state = USED;
-            cpu.active_thread = t;
-            // irq_on();
-            activate(t);
-            // Thread stop executing, get back into kernel mode
-            t->state = UNUSED;
-            kprintf("Stop executing thread with %d pid\n", t->pid);
+            if (t->state == INACTIVE) {
+                kprintf("Got thread to execute with %d pid\n", t->pid);
+                t->state = ACTIVE;
+                cpu.active_thread = t;
+                activate(t);
+                // Thread stop executing
+                t->state = INACTIVE;
+                kprintf("Stop executing thread with %d pid\n", t->pid);
+            }
         }
     }
 }

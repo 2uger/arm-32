@@ -7,5 +7,5 @@ irq_off(void)
 void
 irq_on(void)
 {
-    __asm__("cpsid i");
+    __asm__("cpsie i");
 }

@@ -4,8 +4,8 @@ user_space_code:
     bl input_loop
     pop {pc}
 
-.global print
-print:
+.global call_svc
+call_svc:
     push {lr}
     svc #0
     pop {pc}
@@ -18,9 +18,6 @@ activate:
 
     // Change user space stack pointer
     msr PSP, r1
-
-    // Change control register to get into Thread User mode
-    mov r3, #3
-    msr CONTROL, r3
-
     mov pc, r2
+
+    bx lr

@@ -13,6 +13,7 @@ char ggetchar();
 void kprintf(char *, ...);
 
 void user_space_code(const char *s);
+void input_loop();
 void print(const char *s);
 
 void timerinit(void);
