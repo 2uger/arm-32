@@ -7,9 +7,9 @@ Use Dockerfile to build image with all needed packages inside<br>
 It helps to keep yours host system clean, appreciate that...
 ### How to use:
 - Build container from Dockerfile.
-    > **docker build -t arm-32**
+    > **docker build -t arm-32 .**
 - Run container with shared folder.
-    > **docker run --name vision-kernel -v `pwd`:/vision -w /vision -i -t arm-32**
+    > **docker run --name vision-kernel -v \`pwd\`:/vision -w /vision -i -t arm-32**
 - Get inside container.
     > **docker exec -it vision-kernel bash**
 - Start stopped container.
