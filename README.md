@@ -16,7 +16,7 @@ It helps to keep yours host system clean, appreciate that...
     > **docker start vision-kernel**
 - Build kernel.
     > **make**
-- Make qemu run our kernel.elf file and wait for gdb will connect to it.<br>lm3s6965evb - simple arm chip with 64KB of RAM
+- Make qemu run our kernel.elf file and wait for gdb will connect to it.<br>lm3s6965evb - simple arm chip(cortex M3) with 64KB of RAM
     > **qemu-system-arm -M lm3s6965evb -kernel kernel.elf -nographic -s -S**
 - To stop qemu.
     > **Ctrl-a x**

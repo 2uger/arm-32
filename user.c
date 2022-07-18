@@ -4,8 +4,20 @@
 
 char greetings[] = "Hello, from User space!!!\n";
 
-void
-input_loop()
+int
+task_1()
 {
-    call_svc(greetings);
+    kprintf("Task 1");
+    while(1) {
+    };
+    return 0;
+}
+
+int
+task_2()
+{
+    kprintf("Task 2");
+    while(1) {
+    };
+    return 0;
 }
