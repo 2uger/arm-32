@@ -1,9 +1,5 @@
 .syntax unified
 
-.global call_svc
-call_svc:
-    svc #0
-
 .global swtch
 swtch:
     // Store task's registers into it's own stack,
@@ -12,36 +8,56 @@ swtch:
     ldm r0, {r2, r3, r4, r5} // r0-r3
     ldr r6, [r0, #48] // r12
     ldr r7, [r0, #56] // lr
-    ldr r8, [r0, #60]
-    ldr r1, [r0, #52]
-    ldr r9, =0x21000000
+    ldr r8, [r0, #60] // pc
+    ldr r9, [r0, #64] // psr
+    ldr r1, [r0, #52] // sp
 
     stmdb r1!, {r2, r3, r4, r5, r6, r7, r8, r9}
 
     // Change stack
     msr MSP, r1
+    bx r10
+
+.global save_ctx
+save_ctx:
+    // TODO: save whole context
+    // Save interrupted thread context
+    add r0, r0, #8
+    // r0
+    ldr r1, [sp, #4]
+    str r1, [r0, #0]
+    // r1
+    ldr r1, [sp, #8]
+    str r1, [r0, #4]
+    // r2
+    ldr r1, [sp, #12]
+    str r1, [r0, #8]
+    // r3
+    ldr r1, [sp, #16]
+    str r1, [r0, #12]
+
+    // r12
+    ldr r1, [sp, #20]
+    str r1, [r0, #48]
+    // sp
+    mrs r1, MSP
+    sub r1, r1, #4
+    str r1, [r0, #52]
+    // lr
+    ldr r1, [sp, #24]
+    str r1, [r0, #56]
+    // pc
+    ldr r1, [sp, #28]
+    str r1, [r0, #60]
+    // ps
+    ldr r1, [sp, #32]
+    str r1, [r0, #64]
+
     bx lr
+
+
 .global userret
 userret:
-    // r0 - pointer to task thread structure
-    // r1 - pointer to kernel stack
-
-    @ Save kernel context
-    @ mrs r12, psr
-    @ push {r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, lr}
-    @ str sp, [r1, #0]
-
-    @ Prepare to execute task context
-    ldr r2, [r0, #64] // sp 
-    ldr r3, [r0, #68] // pc
-
-    // Change user space stack pointer
-    //msr MSP, r2
-    pop {r2, pc}
-    bx lr
-
-.global firstret
-firstret:
     @ Prepare to execute task context
     ldr r2, [r0, #60] // sp 
     ldr r3, [r0, #68] // pc
@@ -54,6 +70,6 @@ firstret:
 kernelret:
     // r0 - pointer to kernel stack
     msr MSP, r0
-    pop {r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, lr}
+    //pop {r2, r3, r4, r5, r6, r7, r8, r9, r10, r12, lr}
     msr psr, r12
     bx lr

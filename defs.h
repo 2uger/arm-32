@@ -2,11 +2,10 @@
 #include "scheduler.h"
 
 void swtch(struct Thread *);
+void save_ctx(struct Thread *);
 void userret(struct Thread *);
-void firstret(struct Thread *);
 void kernelret(struct Thread *);
 
-int * get_kernel_stack_pointer(void);
 struct Thread * get_current_active_thread(void);
 void set_active_thread(struct Thread *);
 struct Thread * get_next_unused_thread(void);

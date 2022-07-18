@@ -7,7 +7,6 @@ LD = $(TOOLCHAIN)ld
 OBJCOPY = $(TOOLCHAIN)objcopy
 
 SRC = \
-    isr.c \
     console.c \
     scheduler.c \
     user.c \
@@ -24,7 +23,7 @@ OBJS = \
     timer.o \
     interrupts.o \
 
-kernel: main activate entry
+kernel: main activate entry isr
 	$(LD) -o kernel.elf -T link.ld $(OBJS) 
 	rm *.o
 
@@ -36,6 +35,9 @@ activate:
 
 entry: 
 	$(AS) -mcpu=cortex-m3 -g entry.S -o entry.o 
+
+isr: 
+	$(AS) -mcpu=cortex-m3 -g isr.S -o isr.o 
 
 help:
 	echo $(OBJS)

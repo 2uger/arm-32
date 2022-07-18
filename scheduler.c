@@ -59,6 +59,7 @@ init_thread_pool()
         } else {
             t->stack_frame.pc = (int)&task_2;
         }
+        t->stack_frame.psr = 0x21000000;
         thread_num++;
     }
 }
@@ -73,7 +74,7 @@ scheduler()
             if (t->state == READY) {
                 kprintf("Got thread to execute with %d pid\n", t->pid);
                 cpu.active_thread = t;
-                firstret(t);
+                userret(t);
                 // Thread stop executing
                 t->state = UNUSED;
                 kprintf("Stop executing thread with %d pid\n", t->pid);
