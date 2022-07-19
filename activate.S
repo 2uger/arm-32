@@ -14,6 +14,9 @@ swtch:
 
     stmdb r1!, {r2, r3, r4, r5, r6, r7, r8, r9}
 
+    add r0, r0, #16
+    ldm r0, {r4, r5, r6, r7, r8, r9}
+
     // Change stack
     msr MSP, r1
     bx r10
@@ -36,12 +39,21 @@ save_ctx:
     ldr r1, [sp, #16]
     str r1, [r0, #12]
 
+    str r4, [r0, #16]
+    str r5, [r0, #20]
+    str r6, [r0, #24]
+    str r7, [r0, #28]
+    str r8, [r0, #32]
+    str r9, [r0, #36]
+    str r10, [r0, #40]
+    str r11, [r0, #44]
+
     // r12
     ldr r1, [sp, #20]
     str r1, [r0, #48]
     // sp
     mrs r1, MSP
-    sub r1, r1, #4
+    adds r1, #36
     str r1, [r0, #52]
     // lr
     ldr r1, [sp, #24]

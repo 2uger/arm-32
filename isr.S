@@ -4,6 +4,7 @@
 call_svc:
     mov r2, #2
     svc #7
+    bx lr
 
 .data
 _svc: .asciz "SVC handler\n"
@@ -15,6 +16,11 @@ svc_handler:
     push {lr}
     ldr r0, =_svc
     bl kprintf
+
+    bl get_current_active_thread
+    bl save_ctx
+
+    bl syscall
     pop {pc}
 
 .data

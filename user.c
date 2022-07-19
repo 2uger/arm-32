@@ -8,7 +8,6 @@ int
 task_1()
 {
     kprintf("Task 1\n");
-    call_svc();
     while(1) {
         kprintf("Task 1\n");
     };

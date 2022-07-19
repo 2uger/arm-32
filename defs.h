@@ -25,3 +25,5 @@ void timerinit(void);
 
 void irq_on(void);
 void irq_off(void);
+
+void syscall();
