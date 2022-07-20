@@ -9,6 +9,8 @@ void kernelret(struct Thread *);
 struct Thread * get_current_active_thread(void);
 void set_active_thread(struct Thread *);
 struct Thread * get_next_unused_thread(void);
+void print_thread_info(struct Thread *);
+
 void init_thread_pool();
 void scheduler();
 
@@ -19,7 +21,6 @@ void kprintf(char *, ...);
 void user_space_code(const char *s);
 int task_1();
 int task_2();
-void print(const char *s);
 
 void timerinit(void);
 

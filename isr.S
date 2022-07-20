@@ -36,6 +36,7 @@ systick_handler:
 
     bl get_current_active_thread
     bl save_ctx 
+    bl print_thread_info
 
     bl get_next_unused_thread
     bl set_active_thread

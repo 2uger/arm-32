@@ -5,7 +5,6 @@
 
 struct Cpu cpu;
 struct Thread thread_pool[THREAD_NUM];
-int *kernel_stack;
 
 int global_pid = 1;
 
@@ -21,10 +20,10 @@ set_active_thread(struct Thread *t)
     cpu.active_thread = t;
 }
 
-int *
-get_kernel_stack_pointer()
+void
+print_thread_info(struct Thread *t)
 {
-    return kernel_stack;
+    kprintf("Thread: pid - %d, stack - %x\n", t->pid, t->stack_frame.sp);
 }
 
 struct Thread *
