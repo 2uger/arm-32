@@ -23,7 +23,7 @@ set_active_thread(struct Thread *t)
 void
 print_thread_info(struct Thread *t)
 {
-    kprintf("Thread: pid - %d, stack - %x\n", t->pid, t->stack_frame.sp);
+    kprintf("Thread: pid - %d, stack - %x, pc - %x\n", t->pid, t->stack_frame.sp, t->stack_frame.pc);
 }
 
 struct Thread *

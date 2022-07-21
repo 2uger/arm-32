@@ -2,12 +2,11 @@
 
 .global call_svc
 call_svc:
-    mov r2, #2
     svc #7
     bx lr
 
 .data
-_svc: .asciz "SVC handler\n"
+_svc: .asciz "\nSVC handler\n"
 
 .text
 .global svc_handler
@@ -21,7 +20,9 @@ svc_handler:
     bl save_ctx
 
     bl syscall
-    pop {pc}
+    bl get_current_active_thread
+    pop {r10}
+    bl swtch
 
 .data
 _systick: .asciz "Systick handler\n"
@@ -35,15 +36,15 @@ systick_handler:
     bl kprintf
 
     bl get_current_active_thread
+    mov r3, r0
     bl save_ctx 
+    mov r0, r3
     bl print_thread_info
 
     bl get_next_unused_thread
     bl set_active_thread
     pop {r10}
     bl swtch
-
-    pop {pc}
 
 .data
 _pendsv: .asciz "PENDSV handler\n"

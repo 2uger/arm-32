@@ -2,21 +2,21 @@
 
 #include "defs.h"
 
+
 void
 syscall()
 {
     struct Thread *t = get_current_active_thread();
-    switch(t->stack_frame.r2) {
-        case 2:
-            kprintf("You want to call service 2\n");
-            kprintf("You current thread pid: %d\n", t->pid);
-            break;
-        case 3:
-            kprintf("You want to call service 3\n");
-            break;
-        default:
-            kprintf("Unknown service to call\n");
-            break;
+    char cmd[10];
+    char *cs = t->stack_frame.r0;
+    char *dst = &cmd[0];
+    sstrcpy(cs, dst, 5);
+    if (strncmp(cs, "hello", 4) == 0) {
+        kprintf("You call hello\n");
+    } else if (strncmp(cs, "world", 4) == 0) {
+        kprintf("You call world\n");
+    } else {
+        kprintf("I don't really understand\n");
     }
     return;
 }

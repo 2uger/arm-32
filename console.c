@@ -9,7 +9,14 @@
 
 static volatile uint32_t * const UART_DR = (uint32_t *)0x4000c000;
 static volatile uint32_t * const UART_FR = (uint32_t *)0x4000c018;
+static volatile uint32_t * const UART_LC = (uint32_t *)0x4000c02c;
 
+void
+uart_init()
+{
+    // Disable FIFO in uart, make character long
+    *UART_LC &= ~(1UL << 4);
+}
 
 void
 pputchar(const char c)
@@ -20,8 +27,27 @@ pputchar(const char c)
 char
 ggetchar()
 {
+    while (!(*UART_FR & (1UL << 6))) {};
     char c = *UART_DR;
     return c;
+}
+
+char *
+ffgets(char *str, int size)
+{
+    char *cs;
+    cs = str;
+    char c = 0;
+    while(size) {
+        c = ggetchar();
+        pputchar(c);
+        if ((*cs = c) == 0xd)
+            break;
+        cs++;
+        size--;
+    }
+    *cs = '\0';
+    return str;
 }
 
 static char nums[] = "0123456789abcdef";

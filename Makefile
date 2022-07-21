@@ -13,6 +13,7 @@ SRC = \
     timer.c \
     interrupts.c \
     syscall.c \
+    string.c
 
 OBJS = \
     entry.o \
@@ -24,6 +25,7 @@ OBJS = \
     timer.o \
     interrupts.o \
     syscall.o \
+    string.o
 
 kernel: main activate entry isr
 	$(LD) -o kernel.elf -T link.ld $(OBJS) 
