@@ -1,6 +1,7 @@
-### Learning Cortex m3 CPU arch
-Code to copy data and code into RAM.<br>
-Thread pool with context switching and kernel-user space usage.
+### Tiny OS
+Simple operating system kernel for Cortex-M3 arch.<br> 
+Simple thread preemptive scheduling by time interrupt.<br>
+Kernel and user space division.<br>
 ### Environment
 We actually need arm-none-eabi-... setup to run gcc, binutils and gdb<br>
 Use Dockerfile to build image with all needed packages inside<br>

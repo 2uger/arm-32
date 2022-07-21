@@ -1,6 +1,5 @@
 #include "stdint.h"
 
-// since it already define in compiler
 void
 mmemset(void *dst, char value, uint32_t size)
 {
@@ -21,22 +20,18 @@ mmemmove(void *dst, const void *src, uint32_t size)
     n = size;
     
     if (s < d && s + n > d) {
-        // at some point we will erase dest memory that
+        // at some point we will erase destination memory that
         // we already write into => start from end
         s += n;
         d += n;
         while (n) {
             *d = *s;
-            d--;
-            s--;
-            n--;
+            d--, s--, n--;
         }
     } else {
         while (n) {
             *d = *s;
-            d++;
-            s++;
-            n--;
+            d++, s++, n--;
         }
     }
 }
@@ -56,7 +51,7 @@ sstrcpy(const char *s, char *dst, uint32_t size)
 }
 
 int
-strncmp(const char *p, const char *q, int n)
+strncmp(const char *p, const char *q, uint32_t n)
 {
   while(n > 0 && *p && *p == *q)
       n--, p++, q++;

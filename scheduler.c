@@ -31,7 +31,7 @@ get_next_unused_thread()
 {
     struct Thread *t;
     for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
-        if (t->state == READY && cpu.active_thread->pid != t->pid) return t;
+        if (t->state == RUNNABLE && cpu.active_thread->pid != t->pid) return t;
     }
     kprintf("ERROR: run out of the threads\n");
     return 0;
@@ -51,16 +51,20 @@ init_thread_pool()
     struct Thread *t;
     for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
         t->pid = get_next_pid();
-        t->state = READY;
+        t->state = UNUSED;
         t->stack_frame.sp = 0x20003000 + thread_num * THREAD_SIZE;
-        if (thread_num == 0) {
-            t->stack_frame.pc = (int)&task_1;
-        } else {
-            t->stack_frame.pc = (int)&task_2;
-        }
         t->stack_frame.psr = 0x21000000;
         thread_num++;
     }
+}
+
+void
+init_first_user_thread()
+{
+    kprintf("Initialize first user thread\n");
+    struct Thread *t = &thread_pool[0];
+    t->state = RUNNABLE;
+    t->stack_frame.pc = (int)&init;
 }
 
 void
@@ -70,9 +74,10 @@ scheduler()
     struct Thread *t;
     while (1) {
         for (t = thread_pool; t < &thread_pool[THREAD_NUM]; t++) {
-            if (t->state == READY) {
+            if (t->state == RUNNABLE) {
                 kprintf("Got thread to execute with %d pid\n", t->pid);
-                cpu.active_thread = t;
+                t->state = RUNNING;
+                set_active_thread(t);
                 userret(t);
                 // Thread stop executing
                 t->state = UNUSED;

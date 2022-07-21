@@ -12,9 +12,9 @@ static volatile uint32_t * const UART_FR = (uint32_t *)0x4000c018;
 static volatile uint32_t * const UART_LC = (uint32_t *)0x4000c02c;
 
 void
-uart_init()
+uartinit()
 {
-    // Disable FIFO in uart, make character long
+    // Disable FIFO in uart, make it 1 character long
     *UART_LC &= ~(1UL << 4);
 }
 

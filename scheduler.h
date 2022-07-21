@@ -32,6 +32,6 @@ struct Cpu {
     struct Thread *active_thread;
 };
 
-enum thread_state { UNUSED, USED, READY };
+enum thread_state { RUNNABLE, RUNNING, UNUSED };
 
 #endif

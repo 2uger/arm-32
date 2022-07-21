@@ -20,10 +20,7 @@ kernel_vector:
 entry:
     bl cp_data2ram
     bl zero_bss
-    bl uart_init
-    @ bl timerinit
-    bl init_thread_pool
-    bl scheduler
+    b setup
 
 cp_data2ram:
     .extern _data_base

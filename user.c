@@ -2,9 +2,8 @@
 
 #include "defs.h"
 
-
 int
-task_1()
+init()
 {
     kprintf("Task 1\n");
     int i = 0;
@@ -15,14 +14,5 @@ task_1()
         char *ss = ffgets(cs, 5);
         call_svc(ss);
     }
-    return 0;
-}
-
-int
-task_2()
-{
-    kprintf("Task 2\n");
-    while(1) {
-    };
     return 0;
 }
